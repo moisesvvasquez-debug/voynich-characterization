@@ -1,0 +1,121 @@
+<title>Cómo se hizo — el proceso real, sin maquillaje</title>
+<style>
+:root{
+  --bg:#f5f4f0;--card:#ffffff;--ink:#181a1e;--soft:#4c4e56;--faint:#82848b;
+  --ok:#2f6b3d;--no:#a8402e;--warn:#8a6d1f;--accent:#26566b;--line:rgba(24,26,30,.11);--codebg:#f0efe9;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f1115;--card:#171920;--ink:#e5e6e2;--soft:#a7a9b0;--faint:#75777f;
+  --ok:#7dbf88;--no:#e2846f;--warn:#d0af58;--accent:#6fb2c9;--line:rgba(229,230,226,.12);--codebg:#12141a;
+}}
+:root[data-theme="light"]{--bg:#f5f4f0;--card:#fff;--ink:#181a1e;--soft:#4c4e56;--faint:#82848b;--ok:#2f6b3d;--no:#a8402e;--warn:#8a6d1f;--accent:#26566b;--line:rgba(24,26,30,.11);--codebg:#f0efe9;}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#171920;--ink:#e5e6e2;--soft:#a7a9b0;--faint:#75777f;--ok:#7dbf88;--no:#e2846f;--warn:#d0af58;--accent:#6fb2c9;--line:rgba(229,230,226,.12);--codebg:#12141a;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.6;}
+.wrap{max-width:800px;margin:0 auto;padding:clamp(22px,4.5vw,52px);}
+.kick{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+h1{font-size:clamp(27px,4.6vw,42px);margin:8px 0 8px;letter-spacing:-.02em;line-height:1.06;}
+.tag{font-size:clamp(15px,2.1vw,18px);color:var(--soft);margin:0 0 6px;max-width:60ch;}
+.intro{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:22px 0 8px;font-size:15.5px;line-height:1.55;}
+.intro b{color:var(--accent);}
+h2{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:44px 0 6px;font-weight:700;}
+.hr{height:1px;background:var(--line);margin:6px 0 20px;}
+.log{list-style:none;padding:0;margin:0;counter-reset:s;}
+.log li{position:relative;padding:0 0 18px 46px;margin-bottom:16px;border-bottom:1px solid var(--line);counter-increment:s;}
+.log li::before{content:counter(s);position:absolute;left:0;top:1px;width:30px;height:30px;border-radius:8px;background:var(--card);border:1px solid var(--line);font-family:ui-monospace,monospace;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--faint);}
+.q{font-weight:700;font-size:16.5px;display:block;margin-bottom:3px;}
+.did{font-size:14.5px;color:var(--soft);margin:2px 0;}
+.did .mono{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--codebg);padding:1px 5px;border-radius:4px;}
+.res{font-size:14.5px;margin-top:4px;font-weight:600;}
+.res .b{font-family:ui-monospace,monospace;font-size:11px;font-weight:800;padding:1px 7px;border-radius:20px;margin-right:6px;vertical-align:middle;}
+.b-ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok);}
+.b-no{background:color-mix(in srgb,var(--no) 16%,transparent);color:var(--no);}
+.b-w{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn);}
+.corrections{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--no);border-radius:12px;padding:20px 22px;}
+.corrections h3{font-family:ui-monospace,monospace;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--no);margin:0 0 12px;}
+.corrections .c{margin-bottom:12px;font-size:15px;}
+.corrections .c:last-child{margin-bottom:0;}
+.corrections .c b{color:var(--ink);}
+.grid{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:560px){.grid{grid-template-columns:1fr 1fr;}}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 15px;font-size:14px;}
+.tool b{font-family:ui-sans-serif,system-ui,sans-serif;font-size:12.5px;color:var(--accent);display:block;margin-bottom:3px;}
+.close{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-top:8px;font-size:16px;line-height:1.5;}
+.close b{color:var(--accent);}
+.foot{font-size:12.5px;color:var(--faint);margin-top:30px;line-height:1.6;}
+a{color:var(--accent);}
+</style>
+
+<div class="wrap">
+  <div class="kick">Manuscrito Voynich · el proceso · sin maquillaje</div>
+  <h1>Cómo se hizo</h1>
+  <p class="tag">No los resultados — el camino. Las preguntas, los experimentos, los que fallaron, y los errores que atrapamos a nosotros mismos.</p>
+
+  <div class="intro">Cualquiera puede mostrar un resultado pulido. Lo que muestra criterio es <b>el proceso completo</b>: cuántas ideas murieron, cuántas veces nos corregimos, y si supimos parar donde la evidencia paraba. Por eso este documento incluye los <b>nulos</b> y los <b>errores propios</b> — no son vergüenza, son la prueba de que el método fue honesto.</p>
+
+  <h2>El recorrido — pregunta → qué se hizo → qué salió</h2>
+  <div class="hr"></div>
+  <ol class="log">
+    <li><span class="q">¿Hay mensaje o es ruido?</span>
+      <p class="did">Batería de teoría de la información (entropía, Zipf, TTR) vs. modelos nulos. <span class="mono">battery.py</span></p>
+      <p class="res"><span class="b b-ok">SÍ</span> Carga información — rechazado el ruido.</p></li>
+    <li><span class="q">¿El vocabulario sigue el tema?</span>
+      <p class="did">Divergencia KL por sección vs. nulo permutado.</p>
+      <p class="res"><span class="b b-ok">SÍ</span> 165σ — pero después reconocimos que esto ya lo había hecho Montemurro-Zanette (2013). Reproducción, no descubrimiento.</p></li>
+    <li><span class="q">¿Las plantas "significan" las palabras? (figura→código)</span>
+      <p class="did">Visión-LLM anota 114 plantas; se cruza con las palabras discriminantes. Primero modelo local, luego frontera. <span class="mono">vision_pipeline_claude.py</span></p>
+      <p class="res"><span class="b b-no">NULO ×2</span> Ningún puente. Bonus: 61% de las plantas son quimeras inventadas.</p></li>
+    <li><span class="q">¿El "ajuste" se desplaza como un rotor? (idea del usuario)</span>
+      <p class="did">Similitud de perfil de afijos vs. distancia de folio + permutación + control Currier A/B. <span class="mono">rotor_test.py</span></p>
+      <p class="res"><span class="b b-ok">SÍ</span> El sufijo deriva (z=−4.3), sobrevive el control. El prefijo no.</p></li>
+    <li><span class="q">¿Qué idioma es? — barrido de 25 lenguas</span>
+      <p class="did">Latín (Macer), árabe (Corán, Ibn al-Baitar), sánscrito (Charaka), arameo (Peshitta) + 20 vía UDHR, con UNA tubería. Corpus reales bajados y medidos.</p>
+      <p class="res"><span class="b b-no">NINGUNA</span> Todas repiten frases 16-35% y entropía 3.0-3.6; el Voynich solo en 0.7% / 2.24.</p></li>
+    <li><span class="q">¿Podemos demostrar que es "una máquina"?</span>
+      <p class="did">Test de productividad size-matched + asimetría carácter/palabra. <span class="mono">foundation_test.py</span></p>
+      <p class="res"><span class="b b-w">MIXTO</span> La productividad <b>falló</b> como evidencia (artefacto de tamaño). Sobrevivió la asimetría sub-palabra (137× vs 6×).</p></li>
+    <li><span class="q">¿Los glifos "vocales" son vocales? (pregunta del usuario)</span>
+      <p class="did">Algoritmo de Sukhotin, con español/latín como control.</p>
+      <p class="res"><span class="b b-no">NO</span> En español aísla las vocales limpio; en el Voynich, un desastre → no es alfabeto fonético. El "43% de vocales" resultó ser un supuesto vacío.</p></li>
+    <li><span class="q">¿Una máquina simple lo reproduce entero?</span>
+      <p class="did">Generador de emisión i.i.d. vs. el Voynich, con el español como control comparativo.</p>
+      <p class="res"><span class="b b-ok">SÍ</span> Reproduce todo incl. la entropía. El Voynich no es prosa: es emisión de palabras sin gramática.</p></li>
+    <li><span class="q">¿Es una lengua mágica (enoquiano)?</span>
+      <p class="did">Bajado el corpus de las 48 Llaves enoquianas de John Dee; medido.</p>
+      <p class="res"><span class="b b-no">NO</span> Hasta el enoquiano es más lengua que el Voynich (tiene gramática, repite fórmulas).</p></li>
+    <li><span class="q">¿Es una rueda de Llull? (dirección del usuario)</span>
+      <p class="did">Estudiada la mecánica del Ars Magna; reconstruidas las 3 "ruedas" del Voynich; test de "avanza una rueda por vez".</p>
+      <p class="res"><span class="b b-ok">SÍ, 5 firmas</span> Estructura de 3 ruedas, cobertura exhaustiva, deriva, transición de-una-rueda 2× el azar, y significado por sección.</p></li>
+    <li><span class="q">¿Se puede recuperar la clasificación?</span>
+      <p class="did">Predecir el tema de un folio solo desde sus afijos, leave-one-out sobre 207 folios.</p>
+      <p class="res"><span class="b b-ok">82%</span> vs 62% baseline. El nivel de sujeto es recuperable; el de ítem (qué planta) no — necesita el ancla de imagen, que dio nulo.</p></li>
+    <li><span class="q">¿Aguanta otra transcripción y otros afijos? (blindaje)</span>
+      <p class="did">Re-corrido sobre 3 transcripciones independientes (Takahashi, First Study Group, Currier) + afijos auto-descubiertos por frecuencia + control de glosario con vocabulario real.</p>
+      <p class="res"><span class="b b-ok">AGUANTA</span> Las 3 transcripciones dan lo mismo (h₂ 2.24-2.27, rep 0.1-0.2%). Con afijos automáticos la combinatoria (64%) se sostiene — pero el clasificador bajó de 82% a 71%: efecto robusto, cifra no.</p></li>
+  </ol>
+
+  <h2>Los errores que atrapamos — a nosotros mismos</h2>
+  <div class="hr"></div>
+  <div class="corrections">
+    <h3>Esto es lo que separa el método honesto del teatro</h3>
+    <div class="c"><b>La entropía del árabe.</b> Reporté que el árabe tenía entropía baja "casi como el Voynich". Un chequeo con tubería consistente lo desmintió: yo la había medido sobre el abjad crudo (sin vocales = artificialmente denso). <b>Corregido en vivo</b> — el árabe da ~3.6 como todos.</div>
+    <div class="c"><b>El "43% de vocales".</b> Lo usábamos como dato. La pregunta "¿cómo lo sabés?" lo destapó: era una etiqueta arbitraria de la transliteración, no un hecho. <b>Supuesto derribado.</b></div>
+    <div class="c"><b>El "9% esparcido".</b> El paper decía que solo el 9% de las combinaciones ocurren (muy esparcido). Al medirlo bien: 93% de los pares de afijos ocurren — <b>gramática laxa, no esparcida.</b> Corregido en el paper.</div>
+    <div class="c"><b>El clasificador al 82%.</b> Al re-correrlo con afijos auto-descubiertos —no listas hechas a mano— bajó a 71%. Los afijos curados inflaban el número. <b>El efecto es robusto; la cifra, corregida.</b></div>
+  </div>
+
+  <h2>El instrumental</h2>
+  <div class="hr"></div>
+  <div class="grid">
+    <div class="tool"><b>Estadística propia</b> ~15 scripts de Python: entropías, permutaciones, clustering, generadores, clasificador leave-one-out.</div>
+    <div class="tool"><b>Corpus reunidos</b> transliteración Voynich + latín, árabe clásico y médico, sánscrito, arameo, enoquiano, 20 lenguas UDHR.</div>
+    <div class="tool"><b>Visión-LLM</b> anotación morfológica de 114 plantas + partes farmacéuticas rotuladas.</div>
+    <div class="tool"><b>Literatura</b> ubicado y citado el trabajo previo (Currier, Friedman, Montemurro-Zanette, Timm-Schinner, Reddy-Knight…).</div>
+  </div>
+
+  <div class="close">
+    <b>Lo que este proceso ilustra:</b> en un problema donde casi todos se engañan, el valor no está en un resultado brillante — está en el método. Generar hipótesis, probarlas hasta romperlas, corregir los errores propios, y detenerse donde la evidencia se detiene. No es un descifrado; es un ejercicio de honestidad metodológica — y todo es reproducible. · <a href="https://claude.ai/code/artifact/cafa5cad-d73d-4fd9-a86d-bffa4b3562e9">La autoauditoría</a> · <a href="https://claude.ai/code/artifact/943d66b2-17e3-4c7b-ba78-7c830945fc44">El paper</a>
+  </div>
+
+  <p class="foot">Cada afirmación de esta página corresponde a un experimento con su script y su salida en el repositorio de trabajo. Los nulos y las correcciones se muestran a propósito: un proceso sin fracasos visibles no es un proceso honesto, es un folleto.</p>
+</div>

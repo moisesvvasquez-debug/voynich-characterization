@@ -1,0 +1,689 @@
+<title>Señal antes que sentido: evaluación de autenticidad del Manuscrito Voynich por teoría de la información</title>
+<style>
+  :root{
+    --paper:#ffffff; --panel:#f5f5f7; --ink:#1d1d1f; --ink-soft:#6e6e73; --ink-faint:#86868b;
+    --rubric:#1d1d1f; --indigo:#0071e3; --rule:rgba(0,0,0,.11); --rule-soft:rgba(0,0,0,.06);
+    --ser-voy:#0071e3; --ser-esp:#1d1d1f; --ser-rnd:#a1a1a6; --surface-1:#f5f5f7; --radius:12px;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --paper:#161618; --panel:#1f1f22; --ink:#f5f5f7; --ink-soft:#a1a1a6; --ink-faint:#86868b;
+    --rubric:#f5f5f7; --indigo:#2997ff; --rule:rgba(255,255,255,.13); --rule-soft:rgba(255,255,255,.07);
+    --ser-voy:#2997ff; --ser-esp:#f5f5f7; --ser-rnd:#8e8e93; --surface-1:#1f1f22;
+  }}
+  :root[data-theme="light"]{--paper:#fff;--panel:#f5f5f7;--ink:#1d1d1f;--ink-soft:#6e6e73;--ink-faint:#86868b;--rubric:#1d1d1f;--indigo:#0071e3;--rule:rgba(0,0,0,.11);--rule-soft:rgba(0,0,0,.06);--ser-voy:#0071e3;--ser-esp:#1d1d1f;--ser-rnd:#a1a1a6;--surface-1:#f5f5f7;}
+  :root[data-theme="dark"]{--paper:#161618;--panel:#1f1f22;--ink:#f5f5f7;--ink-soft:#a1a1a6;--ink-faint:#86868b;--rubric:#f5f5f7;--indigo:#2997ff;--rule:rgba(255,255,255,.13);--rule-soft:rgba(255,255,255,.07);--ser-voy:#2997ff;--ser-esp:#f5f5f7;--ser-rnd:#8e8e93;--surface-1:#1f1f22;}
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+    font-size:17px; line-height:1.6; letter-spacing:-.011em;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:clamp(28px,6vw,88px) clamp(20px,5vw,40px) 96px;}
+
+  .display{font-family:inherit;}
+  .mono,.num{font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;}
+  .num{font-variant-numeric:tabular-nums;}
+  .eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;}
+
+  header.masthead{border-bottom:1px solid var(--rule);padding-bottom:30px;margin-bottom:34px;}
+  h1.title{font-weight:600;font-size:clamp(28px,4.8vw,42px);line-height:1.08;margin:16px 0 12px;letter-spacing:-.022em;text-wrap:balance;}
+  .subtitle{font-size:19px;color:var(--ink-soft);margin:0 0 22px;text-wrap:balance;letter-spacing:-.01em;}
+  .byline{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:14.5px;color:var(--ink-soft);}
+  .byline .who{color:var(--ink);font-weight:600;}
+
+  .specimen{margin:30px 0;padding:18px 20px;background:var(--panel);border:1px solid var(--rule-soft);border-radius:var(--radius);}
+  .specimen .glyphs{font-family:ui-monospace,Menlo,monospace;font-size:15px;color:var(--ink);word-spacing:.1em;line-height:1.8;}
+  .specimen .cap{font-size:12.5px;color:var(--ink-faint);margin-top:10px;}
+
+  .abstract{margin:32px 0;padding:18px 20px;background:var(--panel);border:1px solid var(--rule-soft);border-radius:var(--radius);}
+  .abstract h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 8px;font-weight:600;}
+  .abstract p{margin:0;font-size:16.5px;color:var(--ink-soft);text-align:justify;-webkit-hyphens:auto;hyphens:auto;}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin:34px 0;border-radius:var(--radius);overflow:hidden;}
+  .stat{background:var(--paper);padding:16px 14px;}
+  .stat .v{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;font-size:clamp(18px,3.4vw,23px);font-weight:600;color:var(--ink);letter-spacing:-.01em;}
+  .stat .l{font-size:12px;color:var(--ink-soft);margin-top:5px;line-height:1.35;}
+  @media (max-width:560px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+  section{margin-top:40px;}
+  h2.sec{font-size:23px;font-weight:600;margin:0 0 4px;letter-spacing:-.017em;display:flex;align-items:baseline;gap:12px;}
+  h2.sec .no{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--ink-faint);font-weight:600;}
+  h3.sub{font-size:17.5px;font-weight:600;margin:26px 0 2px;color:var(--ink);letter-spacing:-.01em;}
+  p{margin:12px 0;text-align:justify;-webkit-hyphens:auto;hyphens:auto;}
+  p .em{color:var(--ink);font-weight:600;font-style:normal;}
+  a{color:var(--indigo);text-decoration:none;text-underline-offset:2px;}
+  a:hover{text-decoration:underline;}
+  strong{font-weight:600;}
+
+  figure{margin:26px 0;}
+  .card{background:var(--panel);border:1px solid var(--rule-soft);border-radius:var(--radius);padding:20px 20px 8px;}
+  figcaption,.tcap{font-size:13px;color:var(--ink-faint);margin-top:12px;line-height:1.5;}
+  figcaption .fnum,.tcap .fnum{color:var(--ink);font-weight:600;font-family:ui-monospace,Menlo,monospace;}
+  .tablewrap{overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;}
+  th,td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--rule-soft);white-space:nowrap;}
+  th:first-child,td:first-child{text-align:left;}
+  thead th{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--rule);font-weight:600;}
+  td.num,td .num{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;}
+  tr.hi td{color:var(--ink);font-weight:600;}
+  tr.hi td:first-child{color:var(--ink);}
+  .rowlead{color:var(--ink-soft);}
+
+  .chart{width:100%;height:auto;display:block;}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--ink-soft);margin:4px 2px 0;}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;}
+  .legend .sw{width:22px;height:3px;border-radius:2px;display:inline-block;}
+  .axis line,.axis path{stroke:var(--rule);}
+  .grid line{stroke:var(--rule-soft);}
+  .tick{font-family:ui-monospace,Menlo,monospace;font-size:11px;fill:var(--ink-faint);}
+  .axlab{font-size:12px;fill:var(--ink-soft);}
+  .barval{font-family:ui-monospace,Menlo,monospace;font-size:12px;font-variant-numeric:tabular-nums;font-weight:600;}
+  .catlab{font-size:12px;fill:var(--ink-soft);}
+
+  ol.refs{font-size:14px;color:var(--ink-soft);line-height:1.5;padding-left:22px;}
+  ol.refs li{margin:9px 0;}
+  ol.refs a{word-break:break-word;}
+
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-faint);}
+  .note{font-size:13.5px;color:var(--ink-faint);}
+  ::selection{background:rgba(0,113,227,.22);color:inherit;}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:18px;}
+  .actions .lbl{font-size:12px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;margin-right:2px;}
+  .sharebtn,.pdfbtn{font-family:inherit;font-size:13px;color:var(--ink-soft);background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:6px 13px;cursor:pointer;text-decoration:none;line-height:1;display:inline-flex;align-items:center;gap:6px;transition:border-color .12s,color .12s;}
+  .sharebtn:hover,.pdfbtn:hover{color:var(--ink);border-color:var(--ink-faint);text-decoration:none;}
+  .pdfbtn{color:#fff;background:var(--indigo);border-color:var(--indigo);}
+  .pdfbtn:hover{color:#fff;opacity:.92;}
+  @media print{.actions{display:none!important}iframe{display:none!important}body{background:#fff!important;color:#000!important}a{color:#000!important}figure,table,.card{break-inside:avoid}}
+</style>
+
+<div class="wrap" lang="es">
+
+  <header class="masthead">
+    <div class="eyebrow">Filología cuantitativa · Preprint de trabajo</div>
+    <h1 class="title">Señal antes que sentido: evaluación de autenticidad del Manuscrito Voynich por teoría de la información</h1>
+    <p class="subtitle">Primero si el texto carga un mensaje, luego qué máquina lo produjo — una ingeniería inversa por teoría de la información que se detiene antes del descifrado.</p>
+    <div class="byline">
+      <span><span class="who">Carlos Moisés Vásquez</span> · Investigación independiente</span>
+      <span><a href="mailto:moises.vvasquez@gmail.com">moises.vvasquez@gmail.com</a></span>
+      <span>Julio 2026 · Borrador v3</span>
+    </div>
+  </header>
+
+  <div class="abstract">
+    <h2>Resumen</h2>
+    <p>El Manuscrito Voynich (Beinecke MS 408, pergamino datado por radiocarbono en 1404–1438) está escrito en un script desconocido que ha resistido todo intento de descifrado por más de un siglo. Dejamos de lado el descifrado y planteamos una pregunta anterior y decidible: ¿exhibe el texto las huellas estadísticas de la comunicación codificada, o las de una fabricación sin sentido? La comunicación es independiente del sustrato — todo texto que transmite significado, en cualquier lengua conocida o no, obedece leyes características de frecuencia, predictibilidad, memoria y organización temática. Aplicando una batería estándar de teoría de la información a la transliteración completa de Takahashi (36 923 palabras), y comparando contra lengua natural y dos modelos nulos, encontramos que el manuscrito <em>no</em> es fabricación aleatoria, exhibe una entropía condicional por carácter anómalamente baja, retiene memoria estadística de largo alcance y —lo más revelador— su vocabulario se organiza según la materia ilustrada a 165σ sobre el azar, firma que sobrevive al controlar las dos "lenguas" escribales. Varios de estos —la entropía baja, la estructura combinatoria de palabra y esta organización temática— son resultados ya establecidos, reproducidos aquí de forma independiente con una sola tubería consistente y citados en cada punto; no reclamamos prioridad por ninguno. La evidencia es consistente con un artefacto que porta información (una lengua natural en un script rígido, o una cifra estructurada) e inconsistente con un galimatías sin estructura. Al hacer ingeniería inversa de la estructura, encontramos luego que las palabras no son léxicas sino <em>combinatorias</em>: solo los quince inicios y finales de dos glifos más comunes ya cubren el 62% de ellas (frente al 18% del español), los ajustes reducidos y acoplados por gramática de unos pocos diales cuya forma física —una rueda giratoria de partes— está dibujada en los propios folios cosmológicos del manuscrito. Este coincide con el perfil de una lengua <em>a priori</em> combinatoria — la conjetura a la que llegó William Friedman; las estadísticas de superficie, sin embargo, no pueden decidir si el código carga significado o es un generador mecánico, y mostramos que ese empate es irrompible solo desde el texto — solo las imágenes pueden romperlo. Esto no es un descifrado; es una caracterización de la máquina.</p>
+    <p style="opacity:.8;border-left:3px solid var(--rule);padding-left:14px;margin-top:20px;"><strong>Nota del autor.</strong> No pretendo de ningún modo tener la razón. Lo que sigue es un esfuerzo honesto por acercarme lo más que he podido a comprender este manuscrito, con la ayuda de las herramientas computacionales modernas. Si alguien encuentra un argumento en contra que yo no haya considerado, le agradeceré que me lo haga saber — juntos podríamos acercarnos un poco más. — C.M.V.</p>
+  </div>
+
+  <div class="keywords" style="font-size:14.5px;color:var(--ink-soft);margin:20px 0 4px;"><strong style="color:var(--ink)">Palabras clave —</strong> Manuscrito Voynich · teoría de la información · entropía condicional · filología cuantitativa · morfología combinatoria · hipótesis de cifra · autenticidad del manuscrito</div>
+
+  <div class="eyebrow" style="margin:28px 0 10px;">Puntos clave</div>
+  <div class="stats">
+    <div class="stat"><div class="v num">2.26</div><div class="l">entropía condicional h₂ (bits) — vs 3.04 del español</div></div>
+    <div class="stat"><div class="v num">165σ</div><div class="l">especificidad vocabulario–sección sobre el azar</div></div>
+    <div class="stat"><div class="v num">62%</div><div class="l">de palabras armadas con los 15 inicios y finales de dos glifos más comunes — un código combinatorio (español: 18%)</div></div>
+    <div class="stat"><div class="v num">0</div><div class="l">descifrados aceptados, a la fecha</div></div>
+  </div>
+
+  <div class="specimen">
+    <div class="glyphs">fachys · ykal · ar · ataiin · shol · shory · cthres · y · kor · sholdy</div>
+    <div class="cap">Folio 1r, línea 1 (transliteración EVA, Takahashi). El script nunca se ha leído. Este trabajo no lo intenta. Plantea dos preguntas previas: ¿hay siquiera un mensaje aquí — y si lo hay, qué máquina lo produjo?</div>
+  </div>
+
+  <section>
+    <h2 class="sec"><span class="no">1</span> La pregunta que conviene hacer primero</h2>
+    <p>Cada "solución" anunciada del Manuscrito Voynich —y han sido muchas, las más recientes en 2017, 2019, 2023 y dos veces en 2025— fue rechazada por criptógrafos y lingüistas en semanas <a href="#r-wiki">[1]</a>. El error común es de procedimiento: intentan <em>leer</em> el texto antes de establecer que puede leerse. A mediados de 2026 un mercado de predicción valora en ~3% la probabilidad de un descifrado validado y con revisión por pares antes de fin de año <a href="#r-market">[2]</a>.</p>
+    <p>Invertimos el orden de operaciones. Cuatro hipótesis agotan el espacio: <strong>(a)</strong> una lengua natural en un script inusual; <strong>(b)</strong> una lengua natural cifrada; <strong>(c)</strong> una lengua construida o artificial; <strong>(d)</strong> un fraude — glifos sin sentido producidos para simular texto. Las hipótesis (a)–(c) implican que el texto <em>carga información</em>; solo (d) lo niega. Esa distinción es medible sin leer una sola palabra.</p>
+    <p>La premisa que lo hace posible es que <strong>la comunicación deja huellas independientes del sustrato</strong>. Un mensaje es un mensaje se escriba en latín, náhuatl o una cifra que nadie ha roto; el acto de transmitir significado impone regularidades — frecuencias de palabra zipfianas, una tasa de información por símbolo acotada, correlaciones de largo alcance y vocabulario que sigue a la materia. Esas huellas son lo que medimos. No traducimos el manuscrito; detectamos si hay algo que traducir.</p>
+    <p>Más allá del veredicto de autenticidad, hacemos ingeniería inversa de la estructura: la arquitectura de una "palabra", las capas de formato escribal que hay que quitar antes de cualquier decodificación, y el resultado de dos ataques de <em>crib</em> naturales sobre el blanco más tratable del manuscrito — las etiquetas del zodiaco. Reportamos los cribs que <em>fallaron</em> como resultados de primer orden: en un problema tan saturado de "soluciones" prematuras, saber con precisión qué apoyos no existen vale tanto como cualquiera que pudiera existir.</p>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="no">2</span> Materiales</h2>
+    <p>Usamos la transliteración de Takahashi —la primera y única transcripción completa del manuscrito— tal como se distribuye en el archivo interlineal Landini–Stolfi en formato IVTFF <a href="#r-transcr">[3]</a><a href="#r-ivtff">[4]</a>, codificada en el Alfabeto Voynich Extensible (EVA). Las palabras se delimitan por los espacios EVA; se eliminan los rellenos de alineación y se descarta toda palabra con un glifo ilegible. Esto arroja <strong>36 923 palabras</strong> en <strong>9 328 tipos distintos</strong>. Los metadatos por página aportan dos etiquetas usadas abajo: la "lengua" escribal de Currier (A/B) y la clase de ilustración de cada folio (Herbal, Astronómico, Biológico, Farmacéutico, Cosmológico, Zodiaco, Estrellas, Texto).</p>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="no">3</span> Métodos</h2>
+    <p>Todos los métodos son estándar y reproducibles. Sobre el flujo de caracteres (palabras unidas por un espacio) calculamos la <strong>entropía unigrama h₁</strong> y las <strong>entropías condicionales h₂, h₃</strong> — la información media que porta un glifo dado el uno o los dos anteriores, obtenidas como diferencias de entropías de bloque. A nivel de palabra ajustamos la <strong>pendiente de Zipf</strong> de la distribución rango–frecuencia y registramos la razón tipo–token (TTR) y la distribución de longitud de palabra.</p>
+    <p>Para sondear memoria más allá de la adyacencia calculamos la <strong>información mutua I(d)</strong> entre caracteres separados por una distancia <span class="mono">d</span>, hasta 80. Para probar si el vocabulario porta significado medimos la <strong>especificidad por sección</strong>: para cada palabra suficientemente frecuente tomamos la divergencia de Kullback–Leibler de su distribución entre clases de ilustración respecto a la distribución global, y promediamos sobre el corpus ponderando por frecuencia, siguiendo el enfoque de palabras clave de Montemurro & Zanette <a href="#r-mz">[5]</a>. La significancia se evalúa contra un nulo que permuta las etiquetas de sección entre posiciones (20 réplicas).</p>
+    <p><strong>Líneas base.</strong> Un control de lengua natural (español; <span class="mono">Don Quijote</span>, solo letras, igual número de palabras); un Voynich <strong>con palabras barajadas</strong> (destruye el orden entre palabras); y un flujo <strong>aleatorio de orden 0</strong> (las frecuencias de carácter propias del manuscrito, toda estructura removida) — el aspecto del ruido genuino.</p>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="no">4</span> Resultados</h2>
+    <p>Los resultados van en dos movimientos. El primero (§4.1–4.6) establece que el texto carga un mensaje; el segundo (§4.7–4.15) hace ingeniería inversa del mecanismo que lo produjo.</p>
+    <p><strong>Relación con el trabajo previo.</strong> Varias de las mediciones de abajo reproducen resultados ya establecidos — la baja entropía condicional <a href="#r-reddy">[13]</a>, la gramática combinatoria de palabra <a href="#r-stolfi">[14]</a>, las dos "lenguas" de Currier <a href="#r-currier">[6]</a>, la organización temática del vocabulario <a href="#r-mz">[5]</a>, y la firma de generación auto-similar <a href="#r-timm">[8]</a>. Las citamos en cada punto y no reclamamos prioridad por ellas; la reproducción independiente con una sola tubería consistente es en sí un control. Lo propio es la síntesis, el criterio unificado de baja-repetición/baja-entropía aplicado a través de lenguas (§4.4, §5), el control de la máquina mínima (§5), el clasificador de recuperación del sujeto (§4.14), y los controles de robustez (§4.15).</p>
+
+    <h3 class="sub">4.1 &nbsp;No es aleatorio — el nivel de palabra está organizado</h3>
+    <p>El flujo aleatorio de orden 0 es cómo se ve la fabricación-como-ruido: pendiente de Zipf casi plana (−0.16), casi toda palabra única (TTR 0.90) y h₂ ≈ h₁ (sin estructura predictiva). El manuscrito es lo opuesto en cada eje — pendiente de Zipf −0.83 (español: −0.96), fuerte reúso de palabras (TTR 0.25) y h₂ muy por debajo de h₁. Sea lo que sea el manuscrito, <span class="em">no</span> es alguien esparciendo glifos al azar.</p>
+
+    <figure>
+      <div class="card tablewrap">
+        <table>
+          <thead><tr><th>Corpus</th><th>Palabras</th><th>Tipos</th><th>TTR</th><th>h₁</th><th>h₂</th><th>h₃</th><th>Zipf</th><th>⟨long⟩</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>Voynich (todo)</td><td class="num">36 923</td><td class="num">9 328</td><td class="num">0.25</td><td class="num">4.09</td><td class="num">2.26</td><td class="num">1.84</td><td class="num">−0.83</td><td class="num">5.70</td></tr>
+            <tr><td class="rowlead">· Currier A</td><td class="num">10 833</td><td class="num">4 015</td><td class="num">0.37</td><td class="num">4.16</td><td class="num">2.23</td><td class="num">1.74</td><td class="num">−0.71</td><td class="num">6.26</td></tr>
+            <tr><td class="rowlead">· Currier B</td><td class="num">26 090</td><td class="num">6 539</td><td class="num">0.25</td><td class="num">4.03</td><td class="num">2.16</td><td class="num">1.79</td><td class="num">−0.84</td><td class="num">5.46</td></tr>
+            <tr><td>Español (Quijote)</td><td class="num">36 923</td><td class="num">5 825</td><td class="num">0.16</td><td class="num">3.97</td><td class="num">3.04</td><td class="num">2.56</td><td class="num">−0.96</td><td class="num">4.34</td></tr>
+            <tr><td>Voynich barajado</td><td class="num">36 923</td><td class="num">9 328</td><td class="num">0.25</td><td class="num">4.09</td><td class="num">2.26</td><td class="num">1.87</td><td class="num">−0.83</td><td class="num">5.70</td></tr>
+            <tr><td>Aleatorio (orden 0)</td><td class="num">36 911</td><td class="num">33 215</td><td class="num">0.90</td><td class="num">4.09</td><td class="num">4.05</td><td class="num">3.97</td><td class="num">−0.16</td><td class="num">5.70</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption><span class="fnum">Tabla 1.</span> Batería central. El nulo aleatorio diverge del manuscrito en toda métrica; el manuscrito sigue a la lengua natural en organización (Zipf, TTR) pero se aparta marcadamente en predictibilidad (h₂, h₃).</figcaption>
+    </figure>
+
+    <h3 class="sub">4.2 &nbsp;La anomalía: los glifos son demasiado predecibles</h3>
+    <p>Aquí el manuscrito se aparta de la lengua natural — en una dirección inesperada. Su entropía condicional h₂ = 2.26 bits queda <em>muy por debajo</em> del español (3.04) y de toda lengua europea estudiada (típicamente 3.0–4.0); en h₃ la brecha se abre (1.84 vs 2.56). Dado un glifo, el siguiente es mucho más predecible que en cualquier lengua ordinaria. El texto es <span class="em">más</span> regular que la escritura natural, no menos — la propiedad más duradera y peculiar del manuscrito — reconocida como su anomalía distintiva desde Bennett (1976) y analizada computacionalmente por Reddy &amp; Knight <a href="#r-reddy">[13]</a>, y reproducida aquí de forma independiente.</p>
+
+    <figure>
+      <div class="card">
+        <svg id="figEntropy" class="chart" viewBox="0 0 680 300" role="img" aria-label="Entropía condicional h2 por corpus"></svg>
+      </div>
+      <figcaption><span class="fnum">Figura 1.</span> Entropía condicional por carácter h₂. El manuscrito (ambas lenguas escribales) es mucho más predecible que el español, y ni cerca del techo del ruido aleatorio. Una h₂ baja es compatible con un script silábico o una cifra "verbosa" — y también con un proceso generativo muy estructurado (§5).</figcaption>
+    </figure>
+
+    <h3 class="sub">4.3 &nbsp;Tiene memoria más allá de la palabra</h3>
+    <p>La información mutua entre glifos decae con la distancia pero se mantiene medible por encima del piso de ruido barajado hasta <span class="mono">d = 80</span> caracteres — muchas palabras de distancia. Un proceso sin memoria (una cadena de Markov corta, o el nulo aleatorio) no puede producir esto. El manuscrito carga estructura que abarca mucho más que las palabras individuales.</p>
+
+    <figure>
+      <div class="card">
+        <svg id="figMI" class="chart" viewBox="0 0 680 320" role="img" aria-label="Información mutua contra distancia en caracteres"></svg>
+        <div class="legend" id="miLegend"></div>
+      </div>
+      <figcaption><span class="fnum">Figura 2.</span> Información mutua I(d) vs. distancia en caracteres (log–log). Ambos textos reales decaen; el nulo barajado fija el piso de ruido. El manuscrito se mantiene sobre ese piso en toda distancia medida.</figcaption>
+    </figure>
+
+    <h3 class="sub">4.4 &nbsp;El vocabulario sigue a la materia — el resultado más fuerte</h3>
+    <p>Si las palabras significan algo, deberían agruparse con los dibujos. Lo hacen, de forma abrumadora. Las palabras se concentran dentro de su clase de ilustración a <strong>0.574 bits/palabra</strong> frente a una expectativa del nulo permutado de <strong>0.183</strong> — un exceso de 0.39 bits, o unas <span class="em">165 desviaciones estándar</span> — reproduciendo y afilando la organización temática del vocabulario demostrada primero por Montemurro &amp; Zanette <a href="#r-mz">[5]</a>; el resultado aquí es una re-medición, no un descubrimiento nuevo. Los folios herbales hablan un vocabulario distinto al de los folios "estrellas/recetas", exactamente como un herbario real difiere de un almanaque real.</p>
+    <p>La objeción obvia es que las dos lenguas escribales A y B de Currier ocupan secciones distintas, así que el efecto podría ser dialecto, no significado. No lo es: repetir la prueba <em>dentro</em> de una sola lengua mantiene la señal a 75–77σ (Tabla 2). La organización temática del vocabulario está presente dentro de cada sistema escribal, no solo entre ellos.</p>
+
+    <figure>
+      <div class="card tablewrap">
+        <table>
+          <thead><tr><th>Partición</th><th>Palabras</th><th>Secciones</th><th>Observado</th><th>Nulo</th><th>Exceso</th><th>z</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>Manuscrito completo</td><td class="num">36 923</td><td class="num">8</td><td class="num">0.574</td><td class="num">0.183</td><td class="num">+0.391</td><td class="num">165</td></tr>
+            <tr><td class="rowlead">Dentro de Currier B</td><td class="num">22 979</td><td class="num">5</td><td class="num">0.322</td><td class="num">0.112</td><td class="num">+0.210</td><td class="num">77</td></tr>
+            <tr><td class="rowlead">Dentro de Currier A</td><td class="num">10 792</td><td class="num">3</td><td class="num">0.280</td><td class="num">0.086</td><td class="num">+0.195</td><td class="num">75</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption><span class="fnum">Tabla 2.</span> Especificidad por sección (bits/palabra) vs. un nulo con etiquetas permutadas. El efecto sobrevive al restringirse a una sola lengua escribal, excluyendo el confusor dialectal A/B.</figcaption>
+    </figure>
+
+    <h3 class="sub">4.5 &nbsp;Dos sistemas, no uno</h3>
+    <p>Las lenguas A y B de Currier se comportan como sistemas estadísticamente distintos: A reúsa menos las palabras (TTR 0.37 vs 0.25) y usa palabras más largas (6.26 vs 5.46 glifos). Comparten la firma de baja entropía pero difieren en sus estadísticas de superficie — consistente con dos escribas, dos dialectos o dos estados de un sistema, distinción reconfirmada cuantitativamente hace poco <a href="#r-currier">[6]</a>. Descompuestas en partes, ambas comparten cerca del 60% de sus afijos principales — una sola maquinaria — pero cada una guarda un acento característico: A prefiere las terminaciones <span class="mono">-ol/-or</span>, B la terminación <span class="mono">-edy</span>. El par se lee menos como dos lenguas separadas que como dos ajustes de un mismo sistema combinatorio.</p>
+
+    <h3 class="sub">4.6 &nbsp;Sobre la dirección de lectura — una advertencia</h3>
+    <p>Un instinto natural es preguntar si el texto se lee en la dirección equivocada. Señalamos una sutileza metodológica: la entropía condicional por carácter es <em>simétrica por construcción</em> (h₂ hacia adelante = h₂ hacia atrás = 2.258, una identidad de la información mutua), así que no puede detectar lectura de izquierda a derecha frente a derecha a izquierda. La firma direccional genuina del manuscrito es <strong>morfológica</strong> — los glifos ocupan posiciones casi obligatorias dentro de la palabra (ciertas formas solo la inician, otras solo la terminan) — una asimetría que requiere medidas sensibles a la posición, y que trabajo independiente de 2026 halla fuerte y de aspecto cifrado <a href="#r-pos">[7]</a>. La pregunta direccional está viva y sin resolver; simplemente no la responde la entropía por sí sola.</p>
+
+    <h3 class="sub">4.7 &nbsp;La arquitectura de una palabra</h3>
+    <p>La baja entropía condicional tiene una causa concreta: las palabras se ensamblan a partir de <strong>ranuras posicionales</strong> casi obligatorias. Un pequeño conjunto de glifos abre las palabras (<span class="mono">qo-</span>, <span class="mono">ch-</span>, <span class="mono">sh-</span>, <span class="mono">ok-</span>, <span class="mono">ot-</span>) y otro pequeño conjunto las cierra (<span class="mono">-y</span> termina el 38% de las palabras; <span class="mono">-dy</span>, <span class="mono">-aiin</span>, <span class="mono">-ol</span> dominan el resto). Un script donde la primera y la última posición están así de restringidas <em>no es un alfabeto llano</em>, donde cualquier letra puede ocupar cualquier posición. La unidad del sistema no es "un glifo, un sonido"; el perfil encaja con un silabario o una <strong>cifra verbosa</strong> (una unidad subyacente escrita con varios glifos), la explicación natural de la anomalía de entropía de §4.2.</p>
+    <p>Este anclaje posicional se puede cuantificar, y decide una alternativa concreta. Si los glifos fueran los <em>dígitos</em> de un sistema numérico posicional — como exigiría una lectura numérica o de gematría — cualquier glifo podría ocupar cualquier posición, y la identidad del glifo no portaría información sobre ella. La información mutua entre glifo y clase-de-posición (inicial/medial/final) es de <strong>0.72 bits</strong> en el Voynich, contra 0.26 del español, 0.15 del latín, y <strong>0.014</strong> de una muestra equiparada de numerales sintéticos en base 20. Los glifos están así <em>más</em> atados a su posición que las letras de una lengua natural y unas cincuenta veces más que los dígitos: <span class="mono">q</span> es inicial de palabra el 100% de las veces, mientras <span class="mono">n</span>, <span class="mono">m</span> e <span class="mono">y</span> son finales en 89–99%. Una lectura numérica — cada glifo un dígito, las palabras como números — queda por tanto excluida: los símbolos se comportan como morfemas atados a su ranura, no como dígitos libres, afinando el cuadro combinatorio de §4.13. Este valor además supera a cada una de diecinueve lenguas de alfabeto latino medidas con la misma tubería; la más alta, el finés aglutinante (0.42), es el análogo natural más cercano — apilar sufijos es el mecanismo lingüístico que más se parece a los diales del manuscrito — pero queda muy por debajo, y una lengua construida de tipo <em>a priori</em> (esperanto, 0.30) tampoco se le acerca. El nivel del Voynich solo lo alcanzan o superan scripts no alfabéticos — el logográfico chino y japonés (0.8–1.0, con 500+ caracteres distintos) y los silábicos o abjad hindi (0.70), hebreo (0.58) y tamil (0.53), donde cada carácter es una unidad del tamaño de una sílaba o consonante con fuerte rol posicional — pero todos lo logran mediante cientos de glifos o palabras mucho más cortas (hindi largo medio 2.9 vs 5.1 aquí), donde el anclaje es en parte mecánico; a igual inventario y longitud de palabra, el anclaje posicional del manuscrito es el más extremo de la muestra. Ninguna ortografía natural combina su inventario chico (21 glifos), palabras largas y este grado de anclaje — el perfil de un sistema de ranuras plantillado, consistente con la lectura de silabario-o-cifra-verbosa de arriba y no con un alfabeto llano. (Los glifos se cuentan como caracteres EVA sueltos; tratar <span class="mono">ch</span>/<span class="mono">sh</span> como unidades solo elevaría más el anclaje.)</p>
+    <p>La restricción posicional trasciende la palabra hacia la línea. La posición de una palabra dentro de su línea porta información medible sobre su forma: la información mutua entre posición-de-línea y prefijo es 0.19 bits, unas seis veces por encima de un nulo barajado dentro de la línea — concentrada en los bordes (la posición 0 prefiere los prefijos-marcador <span class="mono">d-/s-/y-</span>, la posición 1 hace pico en <span class="mono">ch-/sh-</span>). Dónde se ubica una palabra gobierna en parte cómo está construida, no solo qué es — otra señal de que el marco organizador es el <em>layout</em>, no la oración.</p>
+
+    <h3 class="sub">4.8 &nbsp;Hay que quitar primero dos capas de formato escribal</h3>
+    <p>Antes de poder asignar un valor a cualquier glifo, hay que remover dos capas no lingüísticas — el equivalente del manuscrito a los preámbulos y el relleno que Bletchley Park quitaba antes de leer el tráfico Enigma.</p>
+    <p><strong>Capitales de párrafo.</strong> La primera palabra de un párrafo empieza con un glifo "gallows" (<span class="mono">p, t, k, f</span> — las formas altas y ornamentadas) el <strong>78%</strong> de las veces, contra 6% a mitad de línea. Es una inicial ornamental, una capitular; su primer glifo es decoración, no sonido, y debe descartarse.</p>
+    <p><strong>Marcas de inicio de línea.</strong> Las líneas físicas a mitad de párrafo prefieren otro conjunto de arranques (<span class="mono">d-, s-, y-</span>). Al quitar ese primer glifo aparece, el <strong>28%</strong> de las veces, una palabra común debajo — contra 13% en palabras de mitad de línea: <span class="mono">daiin→aiin</span>, <span class="mono">saiin→aiin</span>, <span class="mono">sol→ol</span>, <span class="mono">dar→ar</span>. El glifo de inicio de línea es una marca añadida pegada a una palabra corriente (el fenómeno catalogado antes como "Grove words" <a href="#r-survey">[15]</a>). Los <em>finales</em> de línea llevan su propia marca: el glifo <span class="mono">m</span> es una terminación de posición terminal — cierra su renglón el <strong>71%</strong> de las veces (16% de base) y reaparece al final de etiquetas sueltas (7.4% de las del zodíaco frente a 2.3% en texto corrido). Es una terminación real y productiva, que se pega a tantas raíces distintas como la <span class="mono">-o</span> corriente (≈353 vs 352 tipos), pero una variante <em>posicional</em> y no semántica: no se desprende como un sigilo añadido (solo el 23% de sus raíces aparece desnuda) y se reparte pareja entre secciones en vez de concentrarse donde el manuscrito marcaría grados — así que no es, por ejemplo, un marcador de grado. En cambio la <span class="mono">-n</span> misma es neutral a la posición (14.5%). Las líneas son demasiado irregulares para métrica estricta (CV ≈ 0.45), así que es formato a nivel de línea, no verso.</p>
+
+    <h3 class="sub">4.9 &nbsp;Dos cribs sobre el zodiaco, y por qué ambos fallan</h3>
+    <p>Los folios del zodiaco son el blanco más tratable del manuscrito: cada medallón lleva un anillo de <strong>~30 ninfas rotuladas</strong> — un andamiaje calendárico (los 30 grados o días de un signo) que aporta el tipo de estructura conocida y ordenada que Bletchley explotaba en las aperturas estereotipadas de mensaje. De ahí salen dos cribs naturales, y los datos refutan ambos.</p>
+    <p><strong>Crib 1 — etiquetas como números de día/grado.</strong> Si las ~30 etiquetas enumeran posiciones, deberían repetirse, en orden correlacionado, entre los doce medallones. No lo hacen: <strong>267 de 296 etiquetas son únicas</strong> (solo el 17% aparece más de una vez). Las etiquetas no son una numeración reciclada.</p>
+    <p><strong>Crib 2 — etiquetas como nombres que el texto circundante repite.</strong> Si la etiqueta de una ninfa nombra algo, su raíz debería aparecer en el texto del mismo folio. El solapamiento entre las etiquetas de un folio y su propio texto corre a apenas <strong>1.18×</strong> el control entre folios (1.08× sobre raíces) — ruido estadístico. No hay co-referencia medible etiqueta-texto.</p>
+    <p>Ambos apoyos que "deberían" existir están ausentes — una ilustración compacta de por qué el manuscrito sigue sin romperse, y una frontera que cualquier propuesta futura debe respetar.</p>
+
+    <h3 class="sub">4.10 &nbsp;La identidad de sección es morfológica, no léxica</h3>
+    <p>La señal de sección de 165σ de §4.4 es real, pero ubicar <em>qué</em> distingue a las secciones es aleccionador: es la distribución de <strong>afijos</strong>, no un vocabulario de palabras-contenido. No emerge ningún lexema aislable para "agua", "raíz" o "estrella"; en cambio cada sección prefiere una familia de prefijos y sufijos. Concretamente, cada sección lleva un prefijo-firma (herbal <span class="mono">ch-</span>, biológico <span class="mono">qok-</span>, zodíaco <span class="mono">ot-</span>), y hasta el marcador opcional <span class="mono">q-</span> oscila del 25% de las palabras biológicas al 1% de las del zodíaco; el prefijo predice la sección muy por encima del azar (información mutua 0.093 bits, z ≈ 240 contra un nulo con secciones barajadas). Los afijos son además de dónde sale el vocabulario de superficie: quitarlos colapsa los 6.300 tipos de palabra de este subconjunto de análisis de afijos sobre ~2.100 núcleos, y quitar solo el prefijo fusiona el 41% de los tipos (de 703 palabras con <span class="mono">q-</span>, el 61% tiene también su forma desnuda atestiguada — el marcador es en gran parte opcional). Los afijos son pocos y en gran parte transversales al dominio — cerca de una docena de prefijos y una docena de sufijos efectivos, y cada sección solo prefiere algunos — así que el "relleno" es una capa sistemática y desplazada por sección, no ruido; la sección se lee tanto del juego de afijos como del inventario mayor de núcleos (los núcleos frecuentes <span class="mono">e</span>, <span class="mono">o</span>, <span class="mono">a</span> son finos, pero los más raros están atados a la sección). Además, los perfiles por sección de los sufijos son casi unidimensionales (87% de la varianza en un eje), una firma de escala ordinal — consistente con, aunque no prueba de, un pequeño dial de "cualidad" graduada en esa ranura. Esto no decide el significado: un morfema clasificador por sección y un generador ajustado por sección producen ambos afijos dependientes de la sección (§5).</p>
+    <figure>
+      <div class="card tablewrap">
+        <table>
+          <thead><tr><th>Sección</th><th>Palabras características</th><th>Patrón</th></tr></thead>
+          <tbody>
+            <tr><td>Herbal</td><td class="num">daiin, chol, chor, shol, shor</td><td>ch-/sh- + -ol/-or</td></tr>
+            <tr><td>Estrellas / recetas</td><td class="num">qokeey, okeey, oteedy, otaiin</td><td>ok-/ot-/qok- + -eey/-aiin</td></tr>
+            <tr><td>Biológico</td><td class="num">shedy, qokedy, qokain, qotedy</td><td>qok-/sh- + -edy</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption><span class="fnum">Tabla 3.</span> Palabras que definen la sección (texto corrido, ≥50% concentradas en su sección). Lo que separa a las secciones es qué familias de afijos dominan — la señal temática se carga morfológicamente, no por un léxico de contenido decodificable.</figcaption>
+    </figure>
+
+    <h3 class="sub">4.11 &nbsp;No es prosa lineal: la línea es una unidad cerrada</h3>
+    <p>Dos medidas finales tocan el supuesto tácito de que el manuscrito es prosa continua para leerse a través de líneas que envuelven — un supuesto que codifica nuestras propias convenciones de lectura, no un universal.</p>
+    <p><strong>No repite como un procedimiento.</strong> Un texto de recetas o procedimientos es formulaico: reutiliza plantillas de instrucción constantemente. La repetición de trigramas (tres palabras) en prosa española corre al <strong>9.6%</strong>; en cada sección del Voynich está entre <strong>0.0% y 0.9%</strong> — uno a dos órdenes de magnitud <em>menor</em>. Casi cada secuencia de tres palabras del manuscrito es única. Sea lo que sea, <strong>no es la lista repetitiva de procedimientos que sería un recetario o un almanaque</strong> — la lectura más popular del manuscrito, y que este estadístico socava directamente.</p>
+    <p><strong>Sus líneas no fluyen una a la otra.</strong> La información mutua entre caracteres adyacentes <em>dentro</em> de una línea es 1.72 bits; en el salto entre líneas colapsa a <strong>0.29 bits</strong> — una caída de seis veces. En prosa que envuelve, la última palabra de una línea predice la primera de la siguiente; aquí ese vínculo está casi cortado. La línea se comporta como una unidad cerrada — una fila o entrada — no como fragmento de una oración que continúa a la vuelta. Junto con los muchos <em>layouts</em> de texto radiales y circulares del manuscrito, que no se leen de izquierda a derecha en absoluto, esto argumenta que imponer un orden de lectura lineal es en sí mismo un error.</p>
+
+    <h3 class="sub">4.12 &nbsp;Una gramática espacial ata el texto a la imagen</h3>
+    <p>La transliteración codifica no solo los glifos sino el <em>tipo y la ubicación</em> de cada bloque de texto — párrafo corrido, etiqueta junto a una figura, anillo circular, radio radial. Mapearlos por página revela que el texto no se dispone independientemente de las ilustraciones: donde aparecen figuras, el texto se acomoda a su alrededor en un patrón específico del tipo de ilustración.</p>
+    <p>El vínculo es lo bastante estrecho como para que el <em>layout</em> por sí solo identifique el contenido. Cada folio del zodiaco (12/12) lleva texto circular central rodeado de etiquetas de ninfa; el patrón "circular + etiquetas" ocurre en las páginas del zodiaco y <strong>en ninguna otra parte</strong>. "Circular + párrafo" es exclusivamente cosmológico. Las páginas farmacéuticas y biológicas emparejan etiquetas con párrafos (frascos y órganos rotulados); las herbales y de recetas, sin tales figuras, son párrafos simples. En resumen, la posición de la escritura la dicta la estructura del dibujo — el texto se comporta como anotación organizada por la imagen, no como un documento autónomo que las imágenes acompañan. Esto es apoyo directo, a nivel de transliteración, para la lectura de imagen-como-canal-primario de §5, obtenido sin ningún análisis de píxeles.</p>
+
+    <h3 class="sub">4.13 &nbsp;El vocabulario es combinatorio</h3>
+    <p>Una última propiedad unifica los resultados estructurales. Las palabras del manuscrito no se toman libremente de un léxico; se ensamblan combinatoriamente desde inventarios pequeños — la gramática de palabra mapeada en detalle por el modelo "crust–core–mantle" de Stolfi y por Reddy &amp; Knight <a href="#r-stolfi">[14]</a><a href="#r-reddy">[13]</a>. Una lista corta de prefijos y sufijos descompone el <strong>81%</strong> de las palabras en prefijo + núcleo + sufijo, y solo <strong>15 prefijos y 17 sufijos</strong>, con un conjunto modesto de núcleos, generan el 90% del texto corrido. El esquema es plantillado a un grado que la lengua natural no alcanza: con solo los quince inicios y finales de dos glifos más comunes, se cubre el <strong>62%</strong> de las palabras Voynich — contra el <strong>18%</strong> de una muestra española equiparada. Los núcleos residuales son finos (dominan glifos sueltos), así que la información que carga una palabra reside en sus afijos — sus "diales" de categoría y estado — no en una raíz rica. En el nivel que importa — el propio dial de afijos — la gramática es permisiva, no escasa: de los <strong>255</strong> marcos posibles prefijo×sufijo (quince prefijos × diecisiete sufijos), el <strong>94%</strong> ocurre de hecho, y solo ~6% no aparece nunca. (Las combinaciones de palabra entera parecen mucho más escasas, pero eso es un artefacto de los muchos núcleos raros de un solo uso que inflan el denominador, no un muro de formas prohibidas — consistente con el acoplamiento graduado y sin prohibiciones duras de abajo.) El mismo hecho visto del otro lado es contundente: mientras las secuencias de tres palabras casi nunca reaparecen (0.4%), los átomos sub-palabra reaparecen sin tregua — el <strong>69%</strong> de los trigramas de átomos se repite — así que son las partes, no las palabras, las unidades reutilizadas del sistema. Que las partes se repitan mientras las secuencias de palabras no lo hacen es, además, específico del manuscrito y no una propiedad genérica de cualquier texto: en una muestra española de igual tamaño los dos niveles suben juntos (las secuencias de tres palabras reaparecen al 16%, una razón de repetición parte-a-palabra cercana a 6×), mientras que el Voynich mantiene la repetición de secuencias de palabras cerca de cero mientras sus partes se saturan — una razón cercana a 140×, unas veinte veces mayor. La unidad reutilizada es, de modo demostrable, sub-palabra, no léxica.</p>
+    <p>Este es el perfil de un sistema de generación combinatoria — del tipo que las ruedas concéntricas giratorias de Ramon Llull (<em>Ars Magna</em>, s. XIII-XV) fueron diseñadas para producir, y que los propios <em>layouts</em> de texto circulares y radiales del manuscrito (§4.12) recuerdan físicamente. Una "palabra" Voynich se lee entonces menos como una forma hablada que como un <em>ajuste de las ruedas</em>. Si tal sistema carga significado (un código clasificatorio) o solo estructura (un generador mecánico — el mecanismo tras la hipótesis del fraude con rejilla de Cardan <a href="#r-rugg">[9]</a>) es el dilema que §5 deja abierto; la señal semántica por sección de §4.4 lo inclina hacia lo primero.</p>
+    <p>Reconstruir la tabla de combinación lo afila. Prefijo y sufijo <em>no</em> son independientes: su información mutua (0.32 bits) es unas veinticuatro veces un nulo de independencia, así que los diales no giran libres — una gramática blanda los acopla, como haría un código diseñado y no un generador libre. Los acoplamientos son preferencias graduadas, no prohibiciones duras (no aparecen pares esperados-pero-ausentes). Y la docena de prefijos de superficie colapsa, por su comportamiento de sufijo, en solo tres o cuatro clases de equivalencia (<span class="mono">ch/sh</span>; la familia gallows <span class="mono">qok/ok/ot/k</span>; <span class="mono">o/y</span>; <span class="mono">d</span>) — el dial de categoría subyacente es pequeño. Congruentemente, los folios cosmológicos están dibujados como ruedas literales: anillos concéntricos y unos treinta radios que llevan texto hacia un rosetón central (p. ej. f69r), una <em>rota</em> en el sentido preciso de las figuras de Llull — el mecanismo y su forma física apareciendo en la misma página. Una inspección más cercana de ese eje es reveladora: alrededor de una estrella central hay un puñado de glifos sueltos (<span class="mono">d, o, y, s, l</span> — formas que parecen numerales solo porque las letras del script lo hacen) — precisamente los átomos con que se construyen las palabras circundantes. La rueda lleva su alfabeto generador en el eje y sus productos en el borde.</p>
+    <p><strong>El ajuste se desliza — un dial, no el otro.</strong> Si una palabra es un ajuste de la rueda, ese ajuste no tiene por qué ser fijo: puede avanzar a lo largo del manuscrito. Y avanza — pero solo en un dial. Comparando el perfil de afijos de cada folio herbal con todos los demás contra su separación en el manuscrito, el inventario de <em>sufijos</em> se desliza de forma sostenida (folios vecinos lo comparten, folios lejanos divergen: r = −0.10 contra un nulo permutado, efecto que sobrevive al restringirse a una sola lengua Currier, z = −4.3), mientras el inventario de <em>prefijos</em> permanece plano (sin deriva significativa). Una causa genérica —una mano de escriba que evoluciona, un cambio gradual de tema— movería ambos diales; que solo el sufijo se deslice apunta a un ajuste estructurado y específico del dial, no a mera deriva de autor. Los dibujos de plantas también se deslizan, pero en un reloj aparte: la morfología de la imagen y el perfil de sufijos siguen cada uno la posición en el libro, pero ninguno predice al otro una vez fijada la posición (r parcial ≈ −0.03). El dial que gira lentamente en el texto y el cambio lento de los dibujos son dos procesos independientes — la misma autonomía texto-imagen de §4.12 y §5, ahora visible en la dinámica. (Lo reportamos como una regularidad estructural menor, no como prueba de un rotor mecánico; la deriva es compatible tanto con un código que avanza como con un hábito de escriba que varía lentamente.)</p>
+    <p><strong>Companion interactivo.</strong> Como la afirmación trata de una rueda, puede hacerse girar. Una <a href="https://claude.ai/code/artifact/6a4b5e06-3623-40ce-8309-10bc907ddce0">reconstrucción interactiva de f69r</a> coloca las propias palabras transliteradas del manuscrito en anillos giratorios; al rotarlos se ve qué alineaciones se descomponen en una forma prefijo·núcleo·sufijo lícita o coinciden con una palabra atestiguada en el folio. Es un instrumento para explorar la hipótesis de la rueda, no un descifrado.</p>
+    <h3 class="sub">4.14 &nbsp;La tabla de clasificación es parcialmente recuperable</h3>
+    <p>Si las palabras son ajustes de una rueda clasificatoria, las posiciones de la rueda deberían codificar de qué trata cada página — y lo hacen, de forma recuperable. La clase de ilustración de un folio se puede predecir <em>solo desde su perfil de afijos</em> (centroide más cercano, dejar-uno-fuera sobre 207 folios, sin usar contenido léxico) con <strong>82%</strong> de acierto frente a un baseline de mayoría del 62% — veinte puntos de ganancia solo con morfología (71–82% según si el inventario de afijos es curado o puramente data-driven; el efecto es robusto, la cifra exacta no — §4.15). Los marcadores diagnósticos forman una tabla de clasificación de primer nivel: los folios herbales quedan marcados por los prefijos <span class="mono">cth-/ckh-</span>, los biológicos por <span class="mono">qol-</span> (4.1× de enriquecimiento) y el sufijo <span class="mono">-edy</span>, los farmacéuticos por <span class="mono">-ol/-ody</span>, el zodiaco por <span class="mono">ot-</span>, los astronómicos por <span class="mono">-s/-eey</span>. Esto incide directamente en el dilema de §5: un generador sin contenido no tiene acceso al sujeto de una página y no puede alinear sus diales con él, así que predecir el sujeto al 82% solo desde los afijos es la indicación más fuerte de que el código combinatorio carga <em>significado clasificatorio</em> y no ninguno. Lo que queda sin recuperar es el nivel de ítem — qué planta, qué estrella — que porta el núcleo fino, cuya lectura requiere el ancla figura-a-código que §5 muestra empíricamente nula. Recuperamos la fila superior de la tabla (el sujeto), no sus entradas — el alcance exacto, y el límite, de una clasificación <em>a priori</em> abordada solo desde el texto.</p>
+    <h3 class="sub">4.15 &nbsp;Robustez</h3>
+    <p>Tres controles descartan artefactos de transcripción y de método. <strong>(i) Transcripción:</strong> repetir las medidas centrales sobre tres transcripciones independientes —Takahashi, el First Study Group y Currier— da valores casi idénticos (cobertura combinatoria 64–65%, repetición de trigramas 0.1–0.2%, entropía condicional h₂ 2.24–2.27), así que ningún resultado descansa en una sola lectura. <strong>(ii) Elección de afijos:</strong> reemplazar nuestro inventario curado de prefijos/sufijos por uno puramente data-driven (los veinte inicios y finales de dos glifos más frecuentes) preserva la cobertura combinatoria (64% frente al 18% del español) y el efecto de recuperación del sujeto, aunque el clasificador cae de 82% a 71% — el efecto sobrevive, la cifra exacta no. <strong>(iii) Género:</strong> un "glosario" de control armado con los tipos de palabra únicos de una lengua real iguala la repetición de frase casi nula del manuscrito (0.0%) pero no su entropía deprimida (3.55 frente a 2.26), confirmando que el manuscrito se comporta como una lista de palabras <em>generadas</em>, no reales.</p>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="no">5</span> Discusión</h2>
+    <p><strong>Qué queda descartado.</strong> El fraude ingenuo — glifos garabateados para parecer escritura — se excluye de forma contundente. El ruido genuino muestra pendiente de Zipf plana, casi total unicidad de tipos y ninguna estructura condicional ni de largo alcance; el manuscrito muestra lo contrario en los cuatro. Algo aquí está organizado para portar información.</p>
+    <p><strong>Qué queda abierto.</strong> La baja entropía condicional es un resultado de doble filo. Se explica naturalmente por un sistema portador de información — un silabario, un abyad o una cifra "verbosa" en la que una unidad de texto plano se mapea a varios glifos. Pero un <em>fraude mecánico</em> sofisticado también puede producirla: Timm & Schinner mostraron que un procedimiento de auto-copia reproduce varias estadísticas del Voynich, incluida la baja entropía <a href="#r-timm">[8]</a>. La evidencia de entropía local por sí sola no separa "lengua real en script rígido" de "generación artificial estructurada".</p>
+    <p><strong>Hacia dónde se inclina la balanza.</strong> El resultado de especificidad por sección (§4.4) es el más difícil de fingir para un generador sin contenido, porque un proceso de copia sin contexto no tiene razón para alinear el vocabulario con la ilustración de la página — y sin embargo el manuscrito lo hace a 165σ, y dentro de cada lengua escribal además. Junto con la memoria de largo alcance, esto inclina el peso de la evidencia hacia un sistema que codifica contenido temático. Nuestros hallazgos coinciden con la dirección que el propio campo tomó en 2026 — hacia una estructura estratificada, posicional y de aspecto cifrado <a href="#r-pos">[7]</a><a href="#r-cipher">[10]</a> — antes que hacia el veredicto de fraude.</p>
+    <p><strong>Un mecanismo con nombre, y un precedente notable.</strong> El perfil combinatorio de §4.13 tiene forma histórica. El <em>Ars Magna</em> de Ramon Llull (c. 1305) generaba enunciados rotando discos concéntricos con letras — volvelles — para combinar elementos de inventarios fijos, una técnica viva en la Europa del siglo XV del propio pergamino. De ella descienden dos linajes. Uno es criptográfico: el disco cifrador giratorio de Alberti (1467), luego Trithemius, Vigenère, y finalmente el rotor de la máquina Enigma — cada uno una rueda que recombina alfabetos <a href="#r-alberti">[11]</a>. El otro es lingüístico: las "lenguas filosóficas" a priori (Kircher — por cuyas manos pasó el propio manuscrito — luego Wilkins, Dalgarno, Leibniz), donde una palabra no es un sonido sino un código armado de ranuras de categoría, subcategoría y modificador. Nuestra descomposición — prefijo como categoría, sufijo como estado, núcleo fino como ítem — es precisamente la morfología de tal lengua, y las páginas de texto circular del manuscrito son lo que sus ruedas generadoras parecerían. Esta es, notablemente, la conclusión a la que llegó de forma independiente <strong>William F. Friedman</strong> — el criptólogo que rompió el cifrado PURPLE japonés — quien tras décadas juzgó el Voynich "un intento temprano de construir una lengua artificial o universal del tipo a priori" <a href="#r-friedman">[12]</a>. Nuestras estadísticas recuperan su veredicto desde la propia estructura del texto. Esto reformula la tarea: una lengua a priori no se traduce sino que se <em>reconstruye</em> — se recupera su tabla de clasificación, no un alfabeto fonético — razón por la cual los cribs de búsqueda-de-palabras de §4.9 fallan por diseño.</p>
+    <p><strong>Consistencia con el origen.</strong> La datación por radiocarbono de la vitela (1404-1438) y la procedencia del manuscrito lo sitúan en el norte de Italia y Centroeuropa del siglo XV — el mismo entorno donde circulaba la combinatoria de Llull. Una prueba estructural pareció incidir en la lengua fuente, pero al escrutinio no se sostiene, y la retiramos. Una propuesta recurrente sostiene que el script oculta un abjad semítico; habíamos leído los glifos redondos (<span class="mono">a, o, e, i, y</span>) —si son vocales, ~43% del texto— como europeos y no semíticos. Esa inferencia falla por dos motivos. Primero, que esos glifos sean vocales es indemostrado: una prueba no supervisada de vocal/consonante (el algoritmo de Sukhotin), que recupera limpio las vocales del español y el latín de control, <em>no</em> da partición limpia aquí — el script podría no ser alfabético-fonético en absoluto. Segundo, la premisa de que un abjad escrito casi no lleva vocales es falsa: las <em>matres lectionis</em> del árabe y el hebreo ya rondan el 25–30% de las letras, y el árabe clásico plenamente vocalizado el ~40–56% — a horcajadas de la cifra del manuscrito. La densidad de vocales, entonces, ni confirma un sistema vocálico europeo ni excluye una fuente semítica. La datación y la procedencia siguen consistentes con el entorno europeo de la combinatoria de Llull, pero no fijan por sí solas la lengua subyacente.</p>
+    <p><strong>¿Es siquiera basado en palabras?</strong> Los resultados estructurales (§4.7–4.12) afilan la pregunta en una dirección incómoda. A nivel de <em>palabra</em> el manuscrito es como una lengua — zipfiano, muy reutilizado. Pero por debajo de la palabra se comporta como una <em>notación</em>: ranuras posicionales rígidas, prefijos dependientes del registro (las etiquetas prefieren <span class="mono">ot-/ok-</span>, la prosa <span class="mono">qo-/ch-</span>), identidad de sección cargada por distribución de afijos en vez de palabras-contenido, y etiquetas que resisten ambos cribs. Este es el perfil de un sistema que se ubica <strong>entre lengua y notación</strong> — e invita a una hipótesis que la tradición del descifrado rara vez considera: que las cadenas de glifos podrían no codificar palabras fonéticas como asumen los traductores, sino una anotación estructurada cuyo significado se carga posicionalmente y <em>en concierto con las ilustraciones</em>. El andamiaje calendárico indiscutible del manuscrito — doce medallones zodiacales de treinta ninfas rotuladas, 12 × 30 = 360 — es el caso más claro donde la imagen, no el texto, es el canal primario. Si esa lectura es siquiera parcialmente correcta, el siglo de fracaso no sorprende: los cribs fallan porque buscan palabras en un documento que quizá no las está deletreando. Probar esta afirmación requiere análisis conjunto imagen–texto más allá de la transliteración usada aquí, y es la dirección que consideramos más prometedora.</p>
+    <p><strong>Dos hipótesis que resisten separarse.</strong> Las alternativas vivas — un código combinatorio con significado (la lengua a priori de Friedman) y un generador mecánico sin significado (el modelo de auto-citación de Timm y Schinner) — resultan compartir sus estadísticas de superficie. Las palabras cercanas son algo más parecidas que el azar (17% están a una edición de un vecino previo, contra 10% al barajar el texto), la firma misma que Timm y Schinner leen como copia mecánica; pero un código combinatorio de inventario pequeño produce esos mismos casi-variantes locales como subproducto automático, y la tasa apenas supera al español natural (15%). Los dos relatos son una sola observación vista de dos formas — razón por la cual un siglo de análisis no ha elegido entre ellos. Solo la señal semántica global por sección (§4.4), que un generador ciego al contexto no debería producir, inclina la balanza, débilmente, hacia el significado. Una separación decisiva no está disponible desde el texto solo; requiere el enlace figura-a-código que aportaría el análisis conjunto de imágenes.</p>
+    <p><strong>La generación no es la inscripción.</strong> Hay que mantener separadas dos capas independientes, y confundirlas es un error recurrente. Nuestras estadísticas sondean la <em>generación</em> — el proceso que produjo la secuencia de tokens, sea cual fuere. La codicología sondea la <em>inscripción</em> — el acto físico de escribir. Las manos son fluidas y confiadas, con pocas correcciones, en todas las secciones; pero la fluidez pertenece a la inscripción y no dice nada sobre la generación. Un escriba transcribe con fluidez desde cualquier fuente — una cifra memorizada, un dispositivo giratorio, un ejemplar sin sentido — de modo que el ductus confiado ni excluye una codificación laboriosa (cuyo trabajo, si lo hubo, precedió a la escritura) ni implica significado; del mismo modo, nuestros resultados combinatorios y de topicalidad caracterizan la generación y callan sobre si la escritura fue composición original o copia fluida. Por eso la fluidez no puede leerse, como a veces se hace, como evidencia a favor del fraude o en contra de una cifra: es la capa equivocada. Los dos canales son complementarios y deben analizarse por separado — y es el canal de inscripción que aquí <em>no</em> accedemos (orden de trazos, correcciones, secuencia de tinta, construcción de cuadernillos) el que más probablemente incida en el mecanismo, ya que un dispositivo generador físico deja huellas físicas que una mano libre no.</p>
+    <p style="border:1px solid var(--rule-soft);background:var(--panel);border-radius:var(--radius);padding:14px 16px;"><strong>A qué más se parece el perfil — interpretación, no resultado.</strong> Las mediciones acotan el objeto sin nombrarlo; los parecidos que siguen se ofrecen como caracterización, y ninguno es una afirmación demostrada. Estadísticamente el texto se acerca más a la <em>salida de un generador combinatorio de ranuras</em>: palabras armadas por posiciones prefijo–núcleo–sufijo, una grilla plana de tokens en lugar de un árbol anidado (§4), y una máquina de primer orden que reproduce la entropía anómalamente baja. Sus parientes históricos más cercanos son las lenguas filosóficas <em>a priori</em>, cuyas palabras compuestas por categorías producirían exactamente esta regularidad de ranuras y topicalidad por sección (conjetura de Friedman, ref. 12), y los dispositivos combinatorios de adivinación del linaje de Llull (§4.13). Lo que ningún parecido gana es significado: ninguna descomposición por ranuras que probamos recupera un sentido estable, de modo que "se parece a un generador por categorías" describe la <em>forma del mecanismo</em>, no una lectura. El conjunto se imagina mejor como una enciclopedia disfrazada — vestida de saber herbario, astrológico y balneológico, con un texto que se comporta como tokens generados con sesgo temático, no como prosa. A nivel de género el ajuste es un <em>inventario</em> más que una narrativa: las entradas son de tipo lista, no oracionales (§4.11), plantilladas desde un conjunto chico de prefijos marcadores de clase sobre un stock grande de núcleos — la forma de un catálogo de entradas codificadas [categoría][valor] — y comparten la repetición de frases casi nula de una lista de palabras (§4.15), mientras la entropía baja marca las entradas como generadas y no como palabras naturales. Esto refina el género sin decidir el significado: un catálogo genuino en notación construida y uno fabricado lo compartirían. La conjetura históricamente más apta para el pequeño dial ordinal de "cualidad" (§4.10) es un grado complexional galénico — caliente–tibio–frío, el rating estándar de un herbario del siglo XV — un único eje ordinal que coincide con el espacio de grados mayormente unidimensional que medimos. Lo marcamos como la hipótesis de contenido líder, no un resultado, porque no puede verificarse: la complexión es una cualidad atribuida, no visible (un dibujo, por convencionales que sean sus partes, no muestra la "calidez"), y el único test que podría anclarla — si las plantas dibujadas como calientes llevan el grado caliente — es el enlace figura-a-código, que da nulo tres veces, y encima las plantas dibujadas son quiméricas e inidentificables. La etiqueta que la evidencia mejor calza es una que la evidencia no puede confirmar. Cuál lectura viva lo produjo — lengua inventada, oráculo creído, o fraude deliberado — no es, como se argumentó, decidible desde el objeto, porque las tres dan los mismos tokens y la misma mano fluida.</p>
+    <p><strong>Una prueba constructiva llega al mismo veredicto.</strong> Postular una lógica de uso explícita — tres diales (categoría, ítem, estado) fijados a un sesgo por registro, leídos como prefijo+núcleo+sufijo y avanzados bajo la gramática medida — reproduce la distribución de longitud de palabra casi exactamente y la pendiente de Zipf y la entropía de forma aproximada. Igualar la repetición del manuscrito, sin embargo, exige copiar a nivel de <em>palabras enteras</em>, no de partes: la recombinación por partes deja el texto demasiado variado (razón tipo–token 0.39 vs 0.25), mientras que el reúso de palabra entera lo acerca (0.30). Pero esto tampoco decide el dilema — la lengua natural reúsa palabras enteras aún más (español, 0.16) — y aunque un generador a nivel de partes deja un residuo de entropía de carácter (h₂ 2.68 vs 2.23), emitir palabras enteras i.i.d. del inventario observado lo cierra exactamente (h₂ 2.26): el residuo solo refleja que las palabras se comportan como unidades fijas, no como combinaciones libres de partes. Aun así, ni siquiera un generador que reproduzca la huella completa del manuscrito distingue un código con significado de uno mecánico solo con estadísticas de superficie. El empate es, con esta evidencia, irrompible desde el texto; la imagen debe romperlo.</p>
+    <p><strong>Un mecanismo sí queda excluido: la transposición pura.</strong> Una cifra de transposición reordena unidades sin alterarlas, así que preserva el inventario y las frecuencias de las unidades del texto. Las partes del manuscrito son demasiado pocas y demasiado concentradas para que eso produzca sus estadísticas: incluso un barajado aleatorio total de sus átomos — la transposición llevada al límite — deja el 47% de los trigramas de átomos repitiéndose, frente a cerca del 10% de una lengua natural. Ningún reordenamiento de una lengua natural puede alcanzar estas cifras, porque la repetición excedente vive en el inventario pequeño, no en el orden. Sea cual sea el mecanismo, es <em>sustitutivo</em> — un código verboso — no un revoltijo de un texto por lo demás ordinario.</p>
+    <p><strong>Una convergencia que vale perseguir.</strong> Las plantas del herbal llevan un siglo resistiendo su identificación porque muchísimas son compuestas — la raíz de una especie, las hojas de otra, la flor de una tercera. Si ese ensamblaje es diseño y no descuido, las imágenes obedecen el mismo principio que el texto: una planta se construye de partes intercambiables exactamente como una palabra se construye de prefijo, núcleo y sufijo. Si los dos inventarios se correspondieran — una forma de raíz a un prefijo, una forma de hoja a un núcleo — el manuscrito sería un solo sistema combinatorio expresado en dos canales, y sus partes de planta rotuladas (más densas en la sección farmacéutica, donde cada fragmento dibujado lleva un rótulo) serían la clave bilingüe natural. Probarlo exige anotar sistemáticamente la morfología de las partes contra la ortografía de las partes — el análisis conjunto imagen–texto que este estudio busca una y otra vez. Desde entonces corrimos exactamente esa prueba, y la reportamos sin rodeos: un modelo de visión frontera anotó la morfología de 114 plantas herbales, y por separado las partes farmacéuticas rotuladas, y ni las palabras discriminantes ni los rótulos de las partes predicen un rasgo visible compartido por encima de un nulo permutado — tres pruebas figura→código independientes, todas nulas. Dos hechos explican el fracaso y enfrían la esperanza: los dibujos son ~61% quiméricos anatómicamente (sin un referente estable de especie al cual mapear), y texto e imagen, aunque cada uno deriva lentamente por el libro, lo hacen desacoplados (correlación parcial ≈ 0). La clave bilingüe, si existe, no está en la morfología visible.</p>
+    <p><strong>Candidatos para ese crib.</strong> El mismo análisis de dominio que mapea el <em>layout</em> al contenido también aísla las palabras con más probabilidad de portarlo. Ordenar el vocabulario por cuán concentrada está cada palabra en un dominio temático separa las probables palabras-contenido de la "cola" gramatical que se reparte pareja entre secciones. Los folios botánicos los encabezan <span class="mono">daiin</span> y <span class="mono">chol</span> (67–75% en su dominio, y abrumadoramente a mitad de línea, así que contenido genuino y no marcadores posicionales); la sección balneológica, <span class="mono">shedy</span>; mientras que <span class="mono">ol</span>, <span class="mono">aiin</span> y afines se reparten por todos los dominios, como harían las palabras-función. Y la concentración misma decide una vieja disyuntiva: un "elemento" universal aparecería parejo en todas partes, pero estas palabras están sesgadas por dominio — <span class="mono">daiin</span> denota algo botánico, no elemental. Ninguna puede aún asignarse a un significado específico — esa es la trampa del 97% de falsos positivos de §6 — pero son los tokens precisos a los que un test figura-a-código debería apuntar primero: si <span class="mono">daiin</span> nombra una parte de planta, las plantas que rotula deberían compartir esa parte.</p>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="no">6</span> Limitaciones</h2>
+    <p>Una transcripción (Takahashi) ancla el análisis; sus mediciones centrales se reproducen en dos transcripciones independientes más (First Study Group, Currier) en §4.15, pero las decisiones de frontera de glifo en EVA siguen siendo interpretativas y se propagan a las estadísticas. Las estimaciones de información mutua tienen sesgo positivo a tamaño de muestra finito — mitigado aquí usando un mismo estimador en todos los corpus y anclando a un piso barajado, pero los valores absolutos deben leerse comparativamente, no de forma literal. Las etiquetas de sección derivan de la clase de ilustración, un proxy del tema. Y la advertencia central: <strong>nada aquí decodifica el manuscrito.</strong> Establecemos que el texto se comporta como algo con un mensaje; no recuperamos el mensaje. Una advertencia se sigue directamente de la estructura combinatoria, para cualquier aspirante a decodificador: como el texto se ensambla de un stock pequeño de partes recurrentes, recombinar libremente unidades sub-palabra "encontrará" palabras reales en casi cualquier cosa — en nuestras pruebas, seis sílabas al azar producen una palabra española genuina el 97% de las veces eligiendo. Las palabras sueltas recuperadas nunca son evidencia; solo lo es una única regla sistemática que produzca texto conectado y coherente. Un caso concreto: cruzar los propios afijos del manuscrito contra palabras para "caliente", "tibio", "frío" y "planta" en doce lenguas da ocho coincidencias aparentes — varias asombrosamente aptas (<span class="mono">chedy</span>~<em>chaud</em> "caliente", <span class="mono">chor</span>~<em>psychros</em> "frío", <span class="mono">otaiin</span>~<em>botane</em> "planta") — pero strings aleatorios de las mismas longitudes dan 6.3 ± 3.2 coincidencias, así que los aciertos son estadísticamente indistinguibles del azar (z = +0.5, p = 0.32). Las coincidencias interlingüísticas más seductoras no sobreviven ningún nulo. Esta es la trampa que ha consumido un siglo de soluciones propuestas.</p>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="no">7</span> Conclusión</h2>
+    <p>Ante la pregunta de si el Manuscrito Voynich es comunicación auténtica o un vacío elaborado, las estadísticas responden, con inusual claridad, que no es vacío. Organiza sus palabras como una lengua, recuerda a lo largo de tramos largos como un texto y —de forma decisiva— alinea su vocabulario con su materia mucho más que el azar, incluso dentro de una sola mano escribal. Pero hacer ingeniería inversa de la estructura arroja un segundo resultado, más frío: dos cribs naturales sobre las etiquetas calendáricas del zodiaco fallan ambos, y lo que distingue a las secciones es morfología, no un léxico decodificable — las marcas de un sistema en equilibrio entre lengua y notación. La entropía por glifo anómalamente baja mantiene firmemente en la mesa un origen de cifra estructurada y marca el script como distinto de cualquier alfabeto llano. Sus palabras se ensamblan como los ajustes de una pequeña rueda combinatoria en la tradición de Llull (§4.13), y —el único punto de apoyo positivo sobre el significado— el tema de un folio puede predecirse solo desde sus afijos al 71–82%, fuera de muestra (§4.14): recuperamos la fila superior de la tabla de clasificación, el sujeto, aunque no sus entradas. El paso obvio siguiente —el <strong>modelado conjunto imagen–texto</strong>, tratar las ilustraciones como posible canal primario— ya lo intentamos, y también da nulo (§5): la morfología visible de las plantas no codifica las palabras, y los dibujos son en gran parte quiméricos. El manuscrito tiene un mensaje. Si está deletreado en palabras siquiera — y si puede recuperarse desde algo hoy disponible — sigue siendo, honestamente, la pregunta abierta. Lo que sí podemos decir es exactamente qué clase de objeto es, y por qué un siglo de lecturas ha fracasado.</p>
+  </section>
+
+  <section>
+    <h2 class="sec">Materiales complementarios</h2>
+    <p>Complementos interactivos y explicativos de este trabajo (páginas web autocontenidas):</p>
+    <figure class="card" style="padding:0;overflow:hidden;"><iframe title="El generador de tres diales — incrustado en vivo" sandbox="allow-scripts" loading="lazy" style="width:100%;height:960px;border:0;display:block;background:var(--paper);" srcdoc="<title>La máquina de tres diales — generador de palabras Voynich</title>
+<style>
+:root{
+  --bg:#ffffff; --panel:#f5f5f7; --ink:#1d1d1f; --soft:#6e6e73; --faint:#86868b;
+  --accent:#0071e3; --gold:#8a8a8e; --line:rgba(0,0,0,.11);
+  --ring:#6e6e73; --slab:#f5f5f7; --mark:#1d1d1f;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#161618; --panel:#1f1f22; --ink:#f5f5f7; --soft:#a1a1a6; --faint:#86868b;
+  --accent:#2997ff; --gold:#98989d; --line:rgba(255,255,255,.13);
+  --ring:#a1a1a6; --slab:#1f1f22; --mark:#f5f5f7;
+}}
+:root[data-theme=&quot;light&quot;]{--bg:#fff;--panel:#f5f5f7;--ink:#1d1d1f;--soft:#6e6e73;--faint:#86868b;--accent:#0071e3;--gold:#8a8a8e;--line:rgba(0,0,0,.11);--ring:#6e6e73;--slab:#f5f5f7;--mark:#1d1d1f;}
+:root[data-theme=&quot;dark&quot;]{--bg:#161618;--panel:#1f1f22;--ink:#f5f5f7;--soft:#a1a1a6;--faint:#86868b;--accent:#2997ff;--gold:#98989d;--line:rgba(255,255,255,.13);--ring:#a1a1a6;--slab:#1f1f22;--mark:#f5f5f7;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,&quot;SF Pro Text&quot;,&quot;Helvetica Neue&quot;,&quot;Segoe UI&quot;,system-ui,sans-serif;line-height:1.6;
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:840px;margin:0 auto;padding:clamp(22px,5vw,56px);}
+.kick{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.19em;
+  text-transform:uppercase;color:var(--accent);font-weight:700;}
+h1{font-size:clamp(30px,6vw,50px);font-weight:800;letter-spacing:-.02em;line-height:1.02;
+  margin:10px 0 8px;text-wrap:balance;}
+.lede{color:var(--soft);font-size:clamp(15px,2.3vw,18px);max-width:60ch;margin:0 0 6px;}
+.disc{font-size:13.5px;color:var(--faint);font-style:italic;max-width:64ch;margin:14px 0 0;
+  border-left:2px solid var(--line);padding-left:12px;}
+.stage{margin:34px 0 8px;display:flex;flex-direction:column;align-items:center;}
+svg.wheel{width:min(88vw,420px);height:auto;display:block;touch-action:none;}
+.wheel .rc{fill:none;stroke:var(--line);stroke-width:1;}
+.wheel .lbl{font-family:ui-monospace,Menlo,monospace;font-weight:700;fill:var(--ring);}
+.wheel .lbl.sel{fill:var(--accent);}
+.wheel .ringband{fill:var(--panel);opacity:.55;}
+.wheel .hub{fill:var(--panel);stroke:var(--gold);stroke-width:1.4;}
+.wheel .hubtx{font-family:-apple-system,BlinkMacSystemFont,&quot;SF Pro Text&quot;,&quot;Helvetica Neue&quot;,&quot;Segoe UI&quot;,system-ui,sans-serif;fill:var(--gold);font-weight:700;text-anchor:middle;}
+.pointer{fill:var(--accent);}
+.rgroup{transition:transform 1.15s cubic-bezier(.16,.9,.24,1);transform-origin:200px 200px;}
+.legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin:6px 0 0;
+  font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.08em;color:var(--faint);text-transform:uppercase;}
+.legend b{color:var(--ink);}
+.controls{display:flex;gap:12px;justify-content:center;align-items:center;margin:20px 0 8px;flex-wrap:wrap;}
+button.spin{font-family:-apple-system,BlinkMacSystemFont,&quot;SF Pro Text&quot;,&quot;Helvetica Neue&quot;,&quot;Segoe UI&quot;,system-ui,sans-serif;font-size:17px;font-weight:700;color:#fff;background:var(--accent);
+  border:none;border-radius:11px;padding:12px 26px;cursor:pointer;letter-spacing:.01em;
+  transition:transform .08s;}
+button.spin:active{transform:translateY(1px);}
+button.spin[disabled]{opacity:.5;cursor:default;}
+.auto{font-family:ui-monospace,monospace;font-size:12px;color:var(--soft);background:none;
+  border:1px solid var(--line);border-radius:9px;padding:9px 12px;cursor:pointer;}
+.out{margin:14px auto 0;max-width:560px;}
+.evaline{text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:15px;color:var(--soft);
+  letter-spacing:.02em;margin:0 0 10px;}
+.evaline .p{color:var(--accent);font-weight:700;} .evaline .c{color:var(--ink);font-weight:700;}
+.evaline .s{color:var(--gold);font-weight:700;}
+.slab{background:var(--slab);border-radius:14px;padding:26px 20px 22px;
+  display:flex;justify-content:center;align-items:center;min-height:120px;
+  border:1px solid var(--line);}
+.slab svg{max-width:100%;height:auto;}
+.slab path{fill:none;stroke:var(--mark);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+.slabcap{text-align:center;font-size:12px;color:var(--faint);font-style:italic;margin:8px 0 0;}
+.badge{display:flex;justify-content:center;gap:10px;align-items:center;margin:16px 0 0;font-size:14px;}
+.pill{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.06em;
+  padding:5px 11px;border-radius:20px;text-transform:uppercase;}
+.pill.yes{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);border:1px solid var(--accent);}
+.pill.no{background:transparent;color:var(--faint);border:1px solid var(--line);}
+.tally{text-align:center;font-family:ui-monospace,monospace;font-size:12.5px;color:var(--soft);margin:14px 0 0;}
+.tally b{color:var(--ink);}
+h2{font-size:12px;font-family:ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin:44px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px;font-weight:700;}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:10px;}
+.gcell{background:var(--slab);border-radius:10px;padding:10px 6px 6px;text-align:center;
+  border:1px solid var(--line);}
+.gcell svg path{fill:none;stroke:var(--mark);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+.gcell .gl{font-family:ui-monospace,monospace;font-size:11px;color:var(--faint);margin-top:4px;letter-spacing:.05em;}
+.note{font-size:14px;color:var(--soft);max-width:64ch;margin:16px 0 0;}
+.note b{color:var(--ink);}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+  font-family:ui-monospace,monospace;font-size:11.5px;color:var(--faint);line-height:1.7;}
+.foot a{color:var(--accent);}
+</style>
+
+<div class=&quot;wrap&quot;>
+  <div class=&quot;kick&quot;>Manuscrito Voynich · la máquina, no el mensaje</div>
+  <h1>La máquina de tres diales</h1>
+  <p class=&quot;lede&quot;>Las palabras del Voynich se arman de tres ranuras: un <b style=&quot;color:var(--accent)&quot;>prefijo</b> (familia), un <b>núcleo</b> (ítem) y un <b style=&quot;color:var(--gold)&quot;>sufijo</b> (grado). Girá los diales —cargados con las frecuencias reales del manuscrito— y la máquina produce una palabra. Abajo se dibuja con las formas de los glifos.</p>
+
+  <div class=&quot;stage&quot;>
+    <svg class=&quot;wheel&quot; viewBox=&quot;0 0 400 400&quot; id=&quot;wheel&quot; aria-label=&quot;Rueda de tres anillos&quot;></svg>
+    <div class=&quot;legend&quot;>
+      <span><b style=&quot;color:var(--accent)&quot;>◯ exterior</b> prefijo</span>
+      <span><b>◯ medio</b> núcleo</span>
+      <span><b style=&quot;color:var(--gold)&quot;>◯ interior</b> sufijo</span>
+    </div>
+  </div>
+
+  <div class=&quot;controls&quot;>
+    <button class=&quot;spin&quot; id=&quot;spin&quot;>Girar los diales</button>
+    <button class=&quot;auto&quot; id=&quot;auto&quot;>Girar 100 veces ⟳</button>
+  </div>
+
+  <div class=&quot;out&quot;>
+    <p class=&quot;evaline&quot; id=&quot;eva&quot;>— · — · —</p>
+    <div class=&quot;slab&quot;><svg id=&quot;drawn&quot; viewBox=&quot;0 0 300 60&quot; aria-label=&quot;palabra dibujada&quot;></svg></div>
+    <p class=&quot;slabcap&quot;>la misma palabra, trazada con las formas de los glifos</p>
+    <div class=&quot;badge&quot; id=&quot;badge&quot;></div>
+    <p class=&quot;tally&quot; id=&quot;tally&quot;>Giros: <b>0</b> · caídas en palabra realmente atestiguada: <b>0</b></p>
+  </div>
+
+  <h2>El alfabeto de formas (aproximación estilizada de EVA)</h2>
+  <div class=&quot;gallery&quot; id=&quot;gallery&quot;></div>
+
+  <p class=&quot;note&quot;><b>Qué demuestra —y qué no.</b> Que unos pocos diales cargados con frecuencias reales produzcan, a menudo, palabras que <em>sí existen</em> en el manuscrito (mirá el contador) muestra que el texto es un <b>sistema combinatorio de tres ranuras acopladas</b>, no un léxico. Lo que <b>no</b> muestra es qué significan: un generador vacío y un catálogo con sentido producen las mismas formas. Esto es la <b>máquina</b>, no el mensaje.</p>
+
+  <div class=&quot;foot&quot;>
+    Generador hipotético basado en la estructura prefijo·núcleo·sufijo (81% de las palabras). Los diales usan frecuencias reales de la transliteración Takahashi; las formas dibujadas son <b>aproximaciones estilizadas</b> de los glifos EVA, no facsímiles. No es un descifrado.<br>
+    Companion del paper de caracterización · Carlos Moisés Vásquez
+  </div>
+</div>
+
+<script>
+// ---------- datos reales (Takahashi) ----------
+const DATA = {
+ prefix:[[&quot;ch&quot;,5136],[&quot;o&quot;,2914],[&quot;sh&quot;,2872],[&quot;d&quot;,2781],[&quot;qok&quot;,2703],[&quot;ot&quot;,2053],[&quot;ok&quot;,2051],[&quot;qot&quot;,980],[&quot;qo&quot;,885],[&quot;s&quot;,694],[&quot;yk&quot;,490],[&quot;yt&quot;,425]],
+ core:[[&quot;e&quot;,4340],[&quot;a&quot;,3086],[&quot;o&quot;,2395],[&quot;ai&quot;,2224],[&quot;ee&quot;,1292],[&quot;y&quot;,1142],[&quot;l&quot;,1113],[&quot;ch&quot;,1010],[&quot;r&quot;,699],[&quot;d&quot;,636],[&quot;k&quot;,525],[&quot;al&quot;,286]],
+ suffix:[[&quot;y&quot;,6076],[&quot;dy&quot;,3217],[&quot;in&quot;,2714],[&quot;l&quot;,2338],[&quot;r&quot;,2051],[&quot;edy&quot;,1859],[&quot;ol&quot;,1430],[&quot;aiin&quot;,1125],[&quot;or&quot;,1014],[&quot;ar&quot;,1009],[&quot;al&quot;,692],[&quot;eey&quot;,655]],
+ attested:new Set(&quot;daiin ol chedy aiin shedy chol ar or chey qokeey qokeedy dar shey qokedy qokaiin al dal chor dy okaiin qokal s shol okeey cheey cheol otedy qokar otaiin qol chdy sheey otar otal oteey qoky chy y okal chckhy sho okar okedy saiin dol sheol lchedy qokol oty qokey okeedy dair oteedy cheor shor qotedy shy cthy chody chcthy qoteedy air dam sar o dain dor qokain char qokchy kaiin cheo okeol cho qotchy raiin qotar okey cheedy cheky qotal qokchdy shckhy cthol l otey ykeey kar sol keedy odaiin sheor shody qokeol opchedy qotol sheo sheody olaiin chear checkhy otchy tol lkaiin chal sal kedy otor tar sor oly ykaiin keey qoteey shdy aiiin tedy cthey taiin lor cthor qodaiin chaiin otam lchey lkeey olkeey olkeedy oteol ody qokchedy ytaiin oteody lkeedy lol lshedy sheky okain kol chodaiin choky qokor ches sheckhy okeody chos dshedy okor okchy chees qopchedy shar oiin choty ckhy d ykar otchey cheos qokeody tchedy ckhey qokchey chedaiin chedar otchedy lkar cheal oraiin opchey olkaiin okchey shcthy chckhey olchedy ain os qotor checthy lkedy aly yteedy kchy qo dchy ytar pchedy otchdy qokeeey otchol she yteey kor oteos dchor chety dchedy okchedy she yty tor qotey okam aiir chedal olor olkedy qotchedy okeeey odar tchy daiir sair chl keody ykeedy kal ched qotchdy tchey ky qoaiin qokam cheeky daly olchey okair shaiin shear ycheey kchor ckhol kchey kchol okeor qor teey okchdy olky otair qoeedy qotchey sheal shecthy ytedy kchedy qokeor tal rar shodaiin oaiin dchol doiin dl om qockhy chdal chdar opchdy qockhey olkar lshey cthar keol tchor ykchy chockhy dchey qody qokchol oldy cthody ytal sheos dary ykedy shed okaly qokair olshedy okchor ytchy otain ychor ty chky ydaiin okeeol ory ary chdaiin ldy otaly cheeo lky chocthy yky otchor cham oar chkaiin daldy kchdy tchdy qopchdy okody qokeed teol qoeey okeeo lkchedy kair soiin ytor cphol chokchy ychey opchy chs cheeor olol ols sy okeo okees shal ycheo ykeody qokaly ror lchdy cphy pol yteody qotchol sheeol qokechy chkeey sh ctho rol ram qotchor chckhdy chokaiin key chkal teedy shee shedaiin orol okeeody opaiin lcheey do daiiin odal dcheey cheeody okchol choly tchol choy shocthy ycheol ctheey dshor shes keeol oteor tair aral qokeeody sheeky qoteody ykal shckhey pchor qoteol qodar ychol qoar qopchy ry choiin otody okeal chain dshey lr aldy&quot;.split(&quot; &quot;))
+};
+// ---------- glifos: paths estilizados (viewBox alto 48, baseline ~34) ----------
+const G = {
+ o:{w:22,d:&quot;M11,16 C6,16 3,20 3,25 C3,30 6,34 11,34 C16,34 19,30 19,25 C19,20 16,16 11,16 Z&quot;},
+ e:{w:17,d:&quot;M15,18 C9,16 4,20 4,25 C4,31 9,34 15,32&quot;},
+ c:{w:17,d:&quot;M15,18 C9,16 4,20 4,25 C4,31 9,34 15,32&quot;},
+ a:{w:21,d:&quot;M14,17 C8,16 4,20 4,25 C4,31 8,34 14,33 M16,15 L16,34&quot;},
+ i:{w:12,d:&quot;M6,34 L11,18&quot;},
+ n:{w:19,d:&quot;M6,16 L6,30 C6,35 11,37 16,31&quot;},
+ m:{w:26,d:&quot;M6,16 L6,32 M6,24 C10,19 14,23 14,32 M14,24 C18,19 22,23 22,32 C22,35 25,36 26,33&quot;},
+ l:{w:20,d:&quot;M16,9 C8,8 4,15 8,20 C13,24 17,18 14,12 M13,20 C13,31 12,41 7,45&quot;},
+ r:{w:18,d:&quot;M6,34 L6,18 C6,15 12,14 16,19&quot;},
+ d:{w:22,d:&quot;M17,14 C10,12 4,17 4,23 C4,29 10,31 16,27 C19,25 19,20 16,18 M17,14 L17,34&quot;},
+ y:{w:20,d:&quot;M16,16 C9,14 4,19 6,23 C8,27 14,27 16,22 M16,19 C16,30 15,41 8,46 C5,48 3,46 4,42&quot;},
+ s:{w:18,d:&quot;M15,17 C9,15 5,18 8,21 C11,24 16,24 16,29 C16,34 9,35 5,31&quot;},
+ q:{w:22,d:&quot;M17,15 C10,13 4,18 5,23 C6,28 12,30 17,26 M17,15 L17,42&quot;},
+ t:{w:27,d:&quot;M11,34 L11,9 C11,3 20,3 22,9 C23,14 15,15 12,12&quot;},
+ k:{w:27,d:&quot;M13,34 L13,8 C13,3 4,3 2,9 C1,14 9,15 12,12&quot;},
+ p:{w:29,d:&quot;M7,34 L7,12 C7,4 22,4 22,12 L22,34 M7,17 C1,15 1,22 7,22&quot;},
+ f:{w:31,d:&quot;M7,34 L7,12 C7,4 22,4 22,12 L22,34 M7,17 C1,15 1,22 7,22 M22,17 C28,15 28,22 22,22&quot;},
+ h:{w:18,d:&quot;M6,34 C6,22 7,14 12,11 C16,9 18,14 16,19&quot;}
+};
+function drawWord(str, targetW){
+  let x=2, parts=[], H=48;
+  for(const ch of str){ const g=G[ch]||G.o; parts.push([g,x]); x+=g.w+2; }
+  const total=x+2, scale=Math.min(1,(targetW-8)/total);
+  let inner=&quot;&quot;;
+  for(const [g,px] of parts){ inner+=`<path d=&quot;${g.d}&quot; transform=&quot;translate(${px},0)&quot;/>`; }
+  return {svg:`<g transform=&quot;translate(${(targetW-total*scale)/2},4) scale(${scale})&quot;>${inner}</g>`, h:H*scale+8};
+}
+// ---------- wheel ----------
+const NS=&quot;http://www.w3.org/2000/svg&quot;, CX=200, CY=200;
+const rings=[{key:&quot;prefix&quot;,R:172,cls:&quot;o&quot;},{key:&quot;core&quot;,R:128,cls:&quot;&quot;},{key:&quot;suffix&quot;,R:86,cls:&quot;s&quot;}];
+const wheel=document.getElementById(&quot;wheel&quot;);
+const state={};
+function buildWheel(){
+  let html=&quot;&quot;;
+  // bandas
+  html+=`<circle class=&quot;ringband&quot; cx=&quot;${CX}&quot; cy=&quot;${CY}&quot; r=&quot;192&quot;/>`;
+  rings.forEach(r=>{
+    const items=DATA[r.key];
+    let g=`<g class=&quot;rgroup&quot; id=&quot;g_${r.key}&quot;>`;
+    g+=`<circle class=&quot;rc&quot; cx=&quot;${CX}&quot; cy=&quot;${CY}&quot; r=&quot;${r.R}&quot;/>`;
+    items.forEach((it,i)=>{
+      const a=i*360/items.length, rad=(a-90)*Math.PI/180;
+      const x=CX+r.R*Math.cos(rad), y=CY+r.R*Math.sin(rad);
+      const fs=r.key===&quot;prefix&quot;?13:(r.key===&quot;core&quot;?12.5:12);
+      g+=`<text class=&quot;lbl&quot; id=&quot;t_${r.key}_${i}&quot; x=&quot;${x}&quot; y=&quot;${y}&quot; font-size=&quot;${fs}&quot; `
+       +`text-anchor=&quot;middle&quot; dominant-baseline=&quot;central&quot; transform=&quot;rotate(${a} ${x} ${y})&quot;>${it[0]}</text>`;
+    });
+    g+=`</g>`;
+    html+=g;
+  });
+  // hub
+  html+=`<circle class=&quot;hub&quot; cx=&quot;${CX}&quot; cy=&quot;${CY}&quot; r=&quot;40&quot;/>`;
+  html+=`<text class=&quot;hubtx&quot; x=&quot;${CX}&quot; y=&quot;${CY-4}&quot; font-size=&quot;13&quot;>Ars</text>`;
+  html+=`<text class=&quot;hubtx&quot; x=&quot;${CX}&quot; y=&quot;${CY+12}&quot; font-size=&quot;11&quot; opacity=&quot;.8&quot;>combinandi</text>`;
+  // pointer (12 o'clock, pointing inward)
+  html+=`<path class=&quot;pointer&quot; d=&quot;M200,6 l9,16 l-18,0 z&quot;/>`;
+  wheel.innerHTML=html;
+}
+function weighted(items){
+  const tot=items.reduce((s,x)=>s+x[1],0); let r=state.rng()*tot;
+  for(let i=0;i<items.length;i++){ r-=items[i][1]; if(r<=0) return i; }
+  return items.length-1;
+}
+// PRNG determinista-ish sin Date/Math.random prohibidos? Math.random SÍ está permitido en artifact JS runtime del navegador.
+state.rng=Math.random;
+let spins={prefix:0,core:0,suffix:0}, tally={n:0,hit:0};
+function spinOnce(animate=true){
+  const sel={};
+  rings.forEach((r,ri)=>{
+    const items=DATA[r.key], idx=weighted(items);
+    sel[r.key]={idx,val:items[idx][0]};
+    const a=idx*360/items.length;
+    if(animate){ spins[r.key]+= (3+ri); }
+    const rot = spins[r.key]*360 - a;
+    const grp=document.getElementById(&quot;g_&quot;+r.key);
+    grp.style.transition = animate? &quot;&quot; : &quot;none&quot;;
+    grp.style.transform=`rotate(${rot}deg)`;
+    // marcar seleccionado
+    items.forEach((_,i)=>document.getElementById(`t_${r.key}_${i}`).classList.toggle(&quot;sel&quot;, i===idx));
+  });
+  const word=sel.prefix.val+sel.core.val+sel.suffix.val;
+  const evaEl=document.getElementById(&quot;eva&quot;);
+  evaEl.innerHTML=`<span class=&quot;p&quot;>${sel.prefix.val}</span> · <span class=&quot;c&quot;>${sel.core.val}</span> · <span class=&quot;s&quot;>${sel.suffix.val}</span>`;
+  const dv=document.getElementById(&quot;drawn&quot;);
+  const box=dv.clientWidth||300;
+  const d=drawWord(word, box);
+  dv.setAttribute(&quot;viewBox&quot;,`0 0 ${box} ${Math.max(60,d.h)}`);
+  dv.innerHTML=d.svg;
+  const att=DATA.attested.has(word);
+  document.getElementById(&quot;badge&quot;).innerHTML =
+    `<span class=&quot;mono&quot; style=&quot;font-family:ui-monospace,monospace;font-weight:700&quot;>${word}</span>`+
+    (att?`<span class=&quot;pill yes&quot;>✓ atestiguada en el manuscrito</span>`
+        :`<span class=&quot;pill no&quot;>no atestiguada tal cual</span>`);
+  tally.n++; if(att) tally.hit++;
+  document.getElementById(&quot;tally&quot;).innerHTML=
+    `Giros: <b>${tally.n}</b> · caídas en palabra realmente atestiguada: <b>${tally.hit}</b> (<b>${Math.round(100*tally.hit/tally.n)}%</b>)`;
+}
+document.getElementById(&quot;spin&quot;).addEventListener(&quot;click&quot;,()=>spinOnce(true));
+document.getElementById(&quot;auto&quot;).addEventListener(&quot;click&quot;,()=>{
+  const btn=document.getElementById(&quot;spin&quot;); btn.disabled=true;
+  let k=0; const iv=setInterval(()=>{ spinOnce(false); if(++k>=100){clearInterval(iv);btn.disabled=false;} },16);
+});
+// gallery
+function buildGallery(){
+  const order=[&quot;q&quot;,&quot;o&quot;,&quot;k&quot;,&quot;t&quot;,&quot;p&quot;,&quot;f&quot;,&quot;c&quot;,&quot;h&quot;,&quot;e&quot;,&quot;a&quot;,&quot;i&quot;,&quot;n&quot;,&quot;m&quot;,&quot;l&quot;,&quot;r&quot;,&quot;d&quot;,&quot;y&quot;,&quot;s&quot;];
+  let html=&quot;&quot;;
+  order.forEach(ch=>{
+    const g=G[ch]; if(!g) return;
+    const w=g.w+8;
+    html+=`<div class=&quot;gcell&quot;><svg viewBox=&quot;0 0 ${w} 52&quot; width=&quot;42&quot;><path d=&quot;${g.d}&quot; transform=&quot;translate(4,2)&quot;/></svg><div class=&quot;gl&quot;>${ch}</div></div>`;
+  });
+  document.getElementById(&quot;gallery&quot;).innerHTML=html;
+}
+buildWheel(); buildGallery();
+// primera palabra sin animar
+requestAnimationFrame(()=>spinOnce(false));
+</script>
+"></iframe></figure>
+    <p class="tcap"><span class="fnum">El generador de tres diales — incrustado en vivo.</span> El generador corre aquí, dentro del paper; abajo está la copia independiente.</p>
+    <ul>
+      <li><a href="https://claude.ai/code/artifact/6a4b5e06-3623-40ce-8309-10bc907ddce0">La rueda de f69r</a> — reconstrucción girable de la propia volvelle del manuscrito (§4.13).</li>
+      <li><a href="https://claude.ai/code/artifact/5bbd2b47-eff3-4a61-b542-44a2f427c9cf">La máquina de tres diales</a> — un generador que gira los diales prefijo·núcleo·sufijo con las frecuencias reales del manuscrito y dibuja cada resultado como formas de glifos; un contador muestra con qué frecuencia cae en una palabra realmente atestiguada (§4.13).</li>
+      <li><a href="https://claude.ai/code/artifact/a99d90db-b347-49df-abd9-bda41bac2667">El ajuste que se desliza</a> — la deriva del sufijo y el desacople texto–imagen, visualizados.</li>
+      <li><a href="https://claude.ai/code/artifact/88df4b03-3943-45c4-8f77-2ecae5266e6e">Los hallazgos en tres capas</a> — cada resultado como afirmación rigurosa + explicación en cristiano + conclusión explícita, con la comparación de 25 idiomas.</li>
+      <li><a href="https://claude.ai/code/artifact/0b98649c-2d79-4994-ba61-a14dd510487f">Guía sin jerga</a> — el argumento con cada término técnico explicado por analogía.</li>
+      <li><a href="https://claude.ai/code/artifact/481c9934-8de9-4076-b4a9-ea12335612d9">El mapa de tres capas</a> — carga información · una máquina combinatoria · la pregunta abierta.</li>
+      <li><a href="https://claude.ai/code/artifact/cafa5cad-d73d-4fd9-a86d-bffa4b3562e9">Autoauditoría honesta</a> — nuestras contribuciones vs. el trabajo previo, con un plan de acción por objeción.</li>
+    </ul>
+    <h2 class="sec">Agradecimientos</h2>
+    <p>Los análisis de este trabajo — el diseño y la programación de cada test estadístico, la disciplina de contrastar todo resultado contra un control, y la síntesis histórica que los enmarca — se realizaron en una sola sesión de trabajo en estrecha colaboración con un asistente de investigación de IA (Claude, de Anthropic). Con franqueza, el estudio no habría sido posible, con esta amplitud ni esta velocidad, sin él: la herramienta actuó menos como una ayuda que como un multiplicador de fuerza sobre la generación humana de hipótesis — la diferencia entre una pregunta que solo se podía plantear y una que efectivamente se pudo responder. La dirección de la indagación, las interpretaciones y la responsabilidad por cualquier error siguen siendo del autor.</p>
+  </section>
+
+  <section>
+    <h2 class="sec">Referencias y fuentes</h2>
+    <ol class="refs">
+      <li id="r-wiki">Manuscrito Voynich — panorama e historia de descifrados. <a href="https://en.wikipedia.org/wiki/Voynich_manuscript">en.wikipedia.org/wiki/Voynich_manuscript</a></li>
+      <li id="r-market">Mercado de predicción: descifrado reconocido científicamente antes de dic. 2026 (~3%, mar. 2026). <a href="https://manifold.markets/Quintsequence/will-a-decipherment-of-the-voynich">manifold.markets</a></li>
+      <li id="r-transcr">R. Zandbergen — Transliteración del texto del MS Voynich. <a href="https://www.voynich.nu/transcr.html">voynich.nu/transcr.html</a></li>
+      <li id="r-ivtff">R. Zandbergen — IVTFF (formato intermedio de transliteración del MS Voynich). <a href="http://www.voynich.nu/software/ivtt/IVTFF_format.pdf">voynich.nu/software/ivtt</a></li>
+      <li id="r-mz">M. A. Montemurro y D. H. Zanette (2013). Keywords and co-occurrence patterns in the Voynich Manuscript: an information-theoretic analysis. <em>PLoS ONE</em> 8(6): e66344.</li>
+      <li id="r-currier">La distinción de "lenguas" A/B se origina con P. Currier (1976, seminario sobre el MS Voynich; en M. D'Imperio, ed., <em>New Research on the Voynich Manuscript</em>). Confirmada cuantitativamente por C. Parisel, A Quantitative Confirmation of the Currier Language Distinction (2026), <a href="https://arxiv.org/abs/2604.25979">arXiv:2604.25979</a>.</li>
+      <li id="r-pos">Evidence of Layered Positional and Directional Constraints in the Voynich Manuscript: Implications for Cipher-Like Structure (2026). <a href="https://arxiv.org/pdf/2604.19762">arXiv:2604.19762</a></li>
+      <li id="r-timm">T. Timm y A. Schinner (2019). A possible generating algorithm of the Voynich manuscript. <em>Cryptologia</em> 44(1): 1–19. (El generador de "auto-citación".)</li>
+      <li id="r-rugg">G. Rugg (2004). An Elegant Hoax? A Possible Solution to the Voynich Manuscript. <em>Cryptologia</em> 28(1): 31–46. (El método de tabla y rejilla de Cardan.)</li>
+      <li id="r-cipher">Un nuevo estudio sugiere que el Manuscrito Voynich podría ser una cifra medieval (ene. 2026). <a href="https://archaeologymag.com/2026/01/voynich-manuscript-may-be-a-cipher/">archaeologymag.com</a></li>
+      <li id="r-alberti">Sobre el linaje de la rueda combinatoria: R. Llull, <em>Ars Magna</em> (c. 1305); L. B. Alberti, <em>De Cifris</em> (c. 1467) — el primer disco de cifra polialfabético, ancestro de las máquinas de rotor. <a href="https://en.wikipedia.org/wiki/Alberti_cipher">Cifra de Alberti</a> · <a href="https://spectrum.ieee.org/the-scandalous-history-of-the-last-rotor-cipher-machine">linaje de rotores</a></li>
+      <li id="r-friedman">La conclusión de W. F. Friedman de que el Voynich es una lengua sintética "a priori" — Historia de la investigación. <a href="https://www.voynich.nu/solvers.html">voynich.nu/solvers.html</a></li>
+      <li id="r-reddy">S. Reddy &amp; K. Knight (2011). What We Know About the Voynich Manuscript. <em>Proc. 5th ACL-HLT Workshop on Language Technology for Cultural Heritage, Social Sciences, and Humanities</em>, pp. 78–86. <a href="https://aclanthology.org/W11-1511/">aclanthology.org/W11-1511</a>. (Entropía de carácter, morfología y estructura de n-gramas.) Ver también C. Bennett (1976), <em>Scientific and Engineering Problem-Solving with the Computer.</em></li>
+      <li id="r-stolfi">J. Stolfi (1997–2005). Manuscrito Voynich — estructura de palabra y descomposición "crust–core–mantle"; notas estadísticas. <a href="https://www.ic.unicamp.br/~stolfi/voynich/">ic.unicamp.br/~stolfi/voynich</a></li>
+      <li id="r-survey">J. Bowern y L. Lindemann (2021). The Linguistics of the Voynich Manuscript. <em>Annual Review of Linguistics</em> 7: 285–308. (Survey autorizado de la evidencia estadística y lingüística, incl. LAAFU / línea-como-unidad y "Grove words".)</li>
+      <li>Fundacionales: C. E. Shannon (1948), <em>A Mathematical Theory of Communication</em>; G. K. Zipf (1949), <em>Human Behavior and the Principle of Least Effort</em>; M. A. Montemurro y P. A. Pury (2002), correlaciones de largo alcance en corpus literarios.</li>
+    </ol>
+  </section>
+
+    <div class="actions">
+      <span class="lbl">Compartir</span>
+      <a class="sharebtn" id="share-wa" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="sharebtn" id="share-fb" target="_blank" rel="noopener">Facebook</a>
+      <a class="sharebtn" id="share-x" target="_blank" rel="noopener">X</a>
+      <a class="sharebtn" id="share-th" target="_blank" rel="noopener">Threads</a>
+      <a class="sharebtn" id="share-li" target="_blank" rel="noopener">LinkedIn</a>
+      <button class="pdfbtn" onclick="window.print()">Descargar PDF</button>
+    </div>
+    <script>(function(){var u=encodeURIComponent("https://claude.ai/code/artifact/943d66b2-17e3-4c7b-ba78-7c830945fc44");var t=encodeURIComponent(document.title);var m={wa:"https://wa.me/?text="+t+"%20"+u,fb:"https://www.facebook.com/sharer/sharer.php?u="+u,x:"https://twitter.com/intent/tweet?url="+u+"&text="+t,th:"https://www.threads.net/intent/post?text="+t+"%20"+u,li:"https://www.linkedin.com/sharing/share-offsite/?url="+u};for(var k in m){var e=document.getElementById("share-"+k);if(e)e.href=m[k];}})();</script>
+  <footer>
+    <p class="note">Datos: transliteración de Takahashi (36 923 palabras), archivo IVTFF Landini–Stolfi. Línea base: <span class="mono">Don Quijote</span> (Project Gutenberg). Todas las estadísticas se calcularon sobre el corpus completo. Este borrador reporta únicamente una evaluación de autenticidad y no reclama ningún descifrado.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var css = getComputedStyle(document.documentElement);
+  function c(name){ return css.getPropertyValue(name).trim(); }
+  var VOY = c('--ser-voy'), ESP = c('--ser-esp'), RND = c('--ser-rnd');
+  var RULE = c('--rule'), RULESOFT = c('--rule-soft');
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function el(n, a){ var e=document.createElementNS(SVGNS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+  function txt(x,y,s,cls,anchor,fill){ var t=el('text',{x:x,y:y,'text-anchor':anchor||'middle'}); if(cls)t.setAttribute('class',cls); if(fill)t.setAttribute('fill',fill); t.textContent=s; return t; }
+
+  (function(){
+    var svg = document.getElementById('figEntropy');
+    var W=680, H=300, L=52, R=20, T=24, B=64;
+    var data=[
+      {k:'Voynich A', v:2.23, col:VOY},
+      {k:'Voynich B', v:2.16, col:VOY},
+      {k:'Voynich todo', v:2.26, col:VOY},
+      {k:'Español', v:3.04, col:ESP},
+      {k:'Ruido aleatorio', v:4.05, col:RND}
+    ];
+    var ymax=4.4, plotW=W-L-R, plotH=H-T-B;
+    function Y(v){ return T+plotH-(v/ymax)*plotH; }
+    for(var g=0; g<=4; g++){
+      var yy=Y(g);
+      svg.appendChild(el('line',{x1:L,y1:yy,x2:W-R,y2:yy,stroke:RULESOFT,'stroke-width':1}));
+      svg.appendChild(txt(L-8, yy+4, g.toFixed(0), 'tick', 'end'));
+    }
+    var yl=txt(15, T+plotH/2, 'h₂ (bits)', 'axlab', 'middle'); yl.setAttribute('transform','rotate(-90 15 '+(T+plotH/2)+')'); svg.appendChild(yl);
+    var bw=plotW/data.length, barw=bw*0.56;
+    data.forEach(function(d,i){
+      var x=L+bw*i+(bw-barw)/2, y=Y(d.v), h=T+plotH-y;
+      var rect=el('rect',{x:x,y:y,width:barw,height:h,fill:d.col,rx:4,ry:4});
+      rect.appendChild(el('title',{})).textContent = d.k+': h₂ = '+d.v.toFixed(2)+' bits';
+      svg.appendChild(rect);
+      svg.appendChild(txt(x+barw/2, y-7, d.v.toFixed(2), 'barval', 'middle', d.col));
+      var parts=d.k.split(' ');
+      svg.appendChild(txt(x+barw/2, H-B+18, parts[0], 'catlab'));
+      if(parts[1]) svg.appendChild(txt(x+barw/2, H-B+33, parts[1], 'catlab'));
+    });
+    svg.appendChild(el('line',{x1:L,y1:T+plotH,x2:W-R,y2:T+plotH,stroke:RULE,'stroke-width':1}));
+  })();
+
+  (function(){
+    var svg = document.getElementById('figMI');
+    var W=680, H=320, L=58, R=18, T=18, B=52;
+    var d=[1,2,3,5,8,12,20,30,50,80];
+    var voy=[1.8360,0.9766,0.5632,0.2373,0.0884,0.0185,0.0069,0.0065,0.0107,0.0086];
+    var esp=[0.9352,0.3530,0.1438,0.0444,0.0096,0.0036,0.0025,0.0022,0.0021,0.0021];
+    var floorV=0.0038, plotW=W-L-R, plotH=H-T-B;
+    var xmin=Math.log10(1), xmax=Math.log10(80);
+    var ymin=Math.log10(0.002), ymax=Math.log10(2);
+    function X(v){ return L+(Math.log10(v)-xmin)/(xmax-xmin)*plotW; }
+    function Yv(v){ return T+plotH-(Math.log10(v)-ymin)/(ymax-ymin)*plotH; }
+    [0.002,0.01,0.1,1].forEach(function(gy){
+      var yy=Yv(gy);
+      svg.appendChild(el('line',{x1:L,y1:yy,x2:W-R,y2:yy,stroke:RULESOFT,'stroke-width':1}));
+      svg.appendChild(txt(L-8, yy+4, (gy>=1?gy.toFixed(0):gy.toString()), 'tick', 'end'));
+    });
+    [1,2,5,10,20,50,80].forEach(function(gx){ svg.appendChild(txt(X(gx), H-B+18, gx.toString(), 'tick')); });
+    svg.appendChild(txt(L+plotW/2, H-6, 'distancia en caracteres  d', 'axlab'));
+    var yl=txt(16, T+plotH/2, 'información mutua (bits)', 'axlab'); yl.setAttribute('transform','rotate(-90 16 '+(T+plotH/2)+')'); svg.appendChild(yl);
+    svg.appendChild(el('line',{x1:X(1),y1:Yv(floorV),x2:X(80),y2:Yv(floorV),stroke:RND,'stroke-width':2,'stroke-dasharray':'5 5'}));
+    svg.appendChild(txt(X(80), Yv(floorV)-7, 'piso de ruido', 'catlab', 'end', RND));
+    function path(arr,col){
+      var pts=arr.map(function(v,i){return (i?'L':'M')+X(d[i]).toFixed(1)+' '+Yv(v).toFixed(1);}).join(' ');
+      svg.appendChild(el('path',{d:pts,fill:'none',stroke:col,'stroke-width':2.5,'stroke-linejoin':'round','stroke-linecap':'round'}));
+      arr.forEach(function(v,i){
+        var m=el('circle',{cx:X(d[i]),cy:Yv(v),r:4,fill:col});
+        m.appendChild(el('title',{})).textContent='d='+d[i]+' · I='+v.toFixed(4)+' bits';
+        svg.appendChild(m);
+      });
+    }
+    path(esp,ESP); path(voy,VOY);
+    svg.appendChild(txt(X(1)+8, Yv(voy[0])-6, 'Voynich', 'barval', 'start', VOY));
+    svg.appendChild(txt(X(1)+8, Yv(esp[0])-6, 'Español', 'barval', 'start', ESP));
+    var lg=document.getElementById('miLegend');
+    [['Voynich',VOY],['Español',ESP],['Barajado (piso de ruido)',RND]].forEach(function(p){
+      var k=document.createElement('span'); k.className='k';
+      var sw=document.createElement('span'); sw.className='sw'; sw.style.background=p[1];
+      k.appendChild(sw); k.appendChild(document.createTextNode(p[0])); lg.appendChild(k);
+    });
+  })();
+})();
+</script>

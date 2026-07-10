@@ -1,0 +1,146 @@
+<title>El Voynich — versión científica y explicada</title>
+<style>
+:root{
+  --paper:#e9e7e0; --panel:#f2f0e9; --panel2:#eceae1; --sci:#e6e3d7; --ink:#1c1e24; --soft:#54565d; --faint:#7b7c80;
+  --rubric:#a83526; --indigo:#2f5aa0; --gold:#8a6d22; --green:#4a6b3a; --rule:rgba(28,30,36,.13);
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#14161c; --panel:#1a1d25; --panel2:#20242e; --sci:#191b16; --ink:#dad8ce; --soft:#a6a69f; --faint:#767770;
+  --rubric:#d76a5b; --indigo:#7ba0e0; --gold:#c6a34e; --green:#8fb87a; --rule:rgba(218,216,206,.15);
+}}
+:root[data-theme="light"]{--paper:#e9e7e0;--panel:#f2f0e9;--panel2:#eceae1;--sci:#e6e3d7;--ink:#1c1e24;--soft:#54565d;--faint:#7b7c80;--rubric:#a83526;--indigo:#2f5aa0;--gold:#8a6d22;--green:#4a6b3a;--rule:rgba(28,30,36,.13);}
+:root[data-theme="dark"]{--paper:#14161c;--panel:#1a1d25;--panel2:#20242e;--sci:#191b16;--ink:#dad8ce;--soft:#a6a69f;--faint:#767770;--rubric:#d76a5b;--indigo:#7ba0e0;--gold:#c6a34e;--green:#8fb87a;--rule:rgba(218,216,206,.15);}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;line-height:1.58;}
+.wrap{max-width:800px;margin:0 auto;padding:clamp(20px,4vw,48px);}
+.eyebrow{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--rubric);font-weight:600;}
+h1{font-size:clamp(26px,4.6vw,40px);margin:10px 0 8px;letter-spacing:-.01em;line-height:1.08;text-wrap:balance;}
+.sub{color:var(--soft);font-style:italic;font-size:clamp(15px,2vw,18px);margin:0 0 8px;max-width:62ch;}
+.how{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--faint);margin:14px 0 30px;line-height:1.5;}
+.thesis{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--gold);border-radius:10px;padding:18px 22px;margin-bottom:8px;font-size:clamp(16px,2.1vw,18px);line-height:1.5;}
+.thesis b{color:var(--gold);}
+h2{font-size:clamp(20px,2.8vw,25px);margin:40px 0 2px;letter-spacing:-.01em;text-wrap:balance;}
+.qn{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--rubric);}
+.finding{border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin:14px 0 26px;}
+.lay{padding:15px 20px;}
+.lay+.lay{border-top:1px solid var(--rule);}
+.sci{background:var(--sci);}
+.lab{font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+.lab.s{color:var(--green);} .lab.c{color:var(--indigo);} .lab.v{color:var(--rubric);}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+.lay p{margin:0;font-size:15px;}
+.sci p{font-size:14.5px;}
+.mono{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;}
+.sci b,.mono b{color:var(--ink);font-weight:700;}
+.concl{font-size:15.5px;}
+.concl b{color:var(--rubric);}
+.big-conc{background:var(--panel2);border:1px solid var(--rule);border-radius:12px;padding:22px 24px;margin-top:8px;}
+.big-conc .lab{color:var(--rubric);margin-bottom:10px;}
+.big-conc p{font-size:clamp(16px,2.2vw,19px);line-height:1.5;margin:0 0 12px;text-wrap:balance;}
+.big-conc p:last-child{margin-bottom:0;color:var(--soft);}
+.big-conc b{color:var(--rubric);}
+.fork{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0;}
+@media(min-width:560px){.fork{grid-template-columns:1fr 1fr;}}
+.fk{background:var(--panel);border:1px solid var(--rule);border-radius:9px;padding:14px 16px;font-size:14.5px;}
+.fk b{color:var(--indigo);}
+.foot{font-size:12.5px;color:var(--faint);margin-top:32px;line-height:1.6;}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Manuscrito Voynich · resultados · rigor + explicación</div>
+  <h1>Qué demostramos, y qué significa</h1>
+  <p class="sub">Cada hallazgo en tres capas: lo que dice la ciencia (con método y números), lo mismo en cristiano, y la conclusión explícita. Sin dejar vacíos.</p>
+  <p class="how">Método común a todo: se mide la transliteración completa del manuscrito (Takahashi, 36.923 palabras) y se compara contra (a) lenguas reales, (b) modelos nulos de azar, y (c) máquinas de generar texto. σ = "desviaciones estándar" (cuán imposible es por azar). Entropía = cuán predecible es la próxima letra. TTR = variedad de vocabulario. Trigrama = secuencia de 3 palabras.</p>
+
+  <div class="thesis"><b>Tesis:</b> el Voynich carga información pero <b>no es un texto escrito en ningún idioma</b>. Es una máquina de emitir palabras de un inventario fijo, <b>sin gramática</b>. Abajo, la prueba, paso por paso.</div>
+
+  <!-- 1 -->
+  <div class="qn">Pregunta 1</div>
+  <h2>¿Es un mensaje, o garabato sin sentido?</h2>
+  <div class="finding">
+    <div class="lay sci"><div class="lab s"><span class="dot" style="background:var(--green)"></span>Científico</div>
+      <p class="mono">La divergencia KL del vocabulario entre secciones (herbal vs astronómica vs "recetas") mide <b>+0.39 bits/palabra</b> sobre un nulo de etiquetas permutadas = <b>165σ</b>. Sobrevive al control por lengua escribal (A: 75σ, B: 77σ).</p></div>
+    <div class="lay"><div class="lab c"><span class="dot" style="background:var(--indigo)"></span>En cristiano</div>
+      <p>Las páginas de plantas usan un vocabulario, las de estrellas otro — y esa diferencia es tan marcada que el azar no la puede producir. Como una moneda que sale cara 165 veces seguidas.</p></div>
+    <div class="lay"><div class="lab v"><span class="dot" style="background:var(--rubric)"></span>Conclusión</div>
+      <p class="concl"><b>Carga información real.</b> No es relleno aleatorio ni un fraude vacío. Algo comunica.</p></div>
+  </div>
+
+  <!-- 2 -->
+  <div class="qn">Pregunta 2</div>
+  <h2>¿Es una lengua (latín, árabe, lo que sea)?</h2>
+  <div class="finding">
+    <div class="lay sci"><div class="lab s"><span class="dot" style="background:var(--green)"></span>Científico</div>
+      <p class="mono">(a) El <b>62%</b> de las palabras se cubre con 15 prefijos × 17 sufijos (español: 18%). (b) Las unidades que se repiten son <b>sub-palabra, no palabras</b>: la asimetría carácter/palabra es <b>137×</b> en el Voynich vs <b>6×</b> en español (size-matched). (c) La entropía condicional h₂ = <b>2.24 bits</b>, por debajo de <b>las 24 lenguas</b> medidas (la más baja real: hebreo/árabe 2.7).</p></div>
+    <div class="lay"><div class="lab c"><span class="dot" style="background:var(--indigo)"></span>En cristiano</div>
+      <p>Las palabras se <b>arman de piezas</b> (como Lego), no se sacan de un diccionario de palabras enteras. Y sus letras son <b>demasiado predecibles</b> — más que en cualquier idioma humano.</p></div>
+    <div class="lay"><div class="lab v"><span class="dot" style="background:var(--rubric)"></span>Conclusión</div>
+      <p class="concl">Es una <b>máquina combinatoria de armar palabras</b>, no una lengua hablada transcrita.</p></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="qn">Pregunta 3</div>
+  <h2>¿Será entonces un libro cifrado?</h2>
+  <div class="finding">
+    <div class="lay sci"><div class="lab s"><span class="dot" style="background:var(--green)"></span>Científico</div>
+      <p class="mono">Repetición de trigramas de palabra: <b>0.7%</b> (español 35%, árabe/latín ~21%). Predecibilidad de bigrama (cuánto la palabra previa reduce la incertidumbre de la siguiente): <b>casi nula</b>, indistinguible de palabras independientes. Toda prosa de todo idioma tiene ambas altas.</p></div>
+    <div class="lay"><div class="lab c"><span class="dot" style="background:var(--indigo)"></span>En cristiano</div>
+      <p>Un texto real <b>repite frases</b> ("la raíz de… cura…") y tiene <b>gramática</b> (tras "muchas" viene "gracias"). El Voynich no hace ninguna de las dos: nunca dice lo mismo dos veces, y una palabra no anticipa la siguiente.</p></div>
+    <div class="lay"><div class="lab v"><span class="dot" style="background:var(--rubric)"></span>Conclusión</div>
+      <p class="concl"><b>NO es prosa cifrada de ningún idioma.</b> Un libro secreto en latín o árabe tendría frases y gramática. Este carece de ambas.</p></div>
+  </div>
+
+  <!-- 4 -->
+  <div class="qn">Pregunta 4</div>
+  <h2>¿Y si es un idioma raro que no probamos?</h2>
+  <div class="finding">
+    <div class="lay sci"><div class="lab s"><span class="dot" style="background:var(--green)"></span>Científico</div>
+      <p class="mono">Barrido de <b>24 lenguas</b> (romances, germánicas, eslavas, semíticas, aglutinantes, sánscrito, árabe clásico). Cada una comparte <em>algunos</em> rasgos, pero <b>ninguna</b> reproduce el combo <b>baja repetición (0.7%) + baja entropía (2.24)</b>. Contradicción: borrar la repetición exige cifrado polialfabético, que <em>sube</em> la entropía; el Voynich la tiene baja.</p></div>
+    <div class="lay"><div class="lab c"><span class="dot" style="background:var(--indigo)"></span>En cristiano</div>
+      <p>Probamos con dos docenas de idiomas de todo tipo. El árabe fue el que más se acercó, pero ninguno cuadra en las dos cosas a la vez: "no repetir nada" y "ser tan predecible letra a letra" no pueden venir juntas de una lengua cifrada.</p></div>
+    <div class="lay"><div class="lab v"><span class="dot" style="background:var(--rubric)"></span>Conclusión</div>
+      <p class="concl">No es una lengua natural conocida, <b>cifrada de ninguna forma.</b> El patrón es de <b>máquina</b>, no de idioma.</p></div>
+  </div>
+
+  <div style="background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;margin:6px 0 26px;">
+    <div class="lab s" style="color:var(--green);margin-bottom:10px;"><span class="dot" style="background:var(--green)"></span>La evidencia — el muro, en 25 idiomas</div>
+    <p style="font-size:14.5px;margin:0 0 12px;color:var(--soft)">Toda lengua natural repite frases (~16-35%) y tiene entropía ~3.0-3.6. El Voynich (0.7% / 2.24) está solo, del otro lado. Medido con una tubería única y validada.</p>
+    <div style="overflow-x:auto;"><table class="mono" style="width:100%;border-collapse:collapse;font-size:13.5px;">
+      <tr style="color:var(--faint);text-align:left;"><th style="padding:4px 8px;">lengua</th><th style="padding:4px 8px;">repite frases</th><th style="padding:4px 8px;">entropía h₂</th></tr>
+      <tr style="background:color-mix(in srgb,var(--rubric) 12%,transparent);"><td style="padding:5px 8px;"><b>VOYNICH</b></td><td style="padding:5px 8px;"><b>0.7%</b></td><td style="padding:5px 8px;"><b>2.24</b></td></tr>
+      <tr><td style="padding:5px 8px;">Español</td><td style="padding:5px 8px;">25.6%</td><td style="padding:5px 8px;">3.03</td></tr>
+      <tr><td style="padding:5px 8px;">Árabe (Corán)</td><td style="padding:5px 8px;">26.2%</td><td style="padding:5px 8px;">3.58</td></tr>
+      <tr><td style="padding:5px 8px;">Árabe (Ibn al-Baitar, herbario)</td><td style="padding:5px 8px;">16.6%</td><td style="padding:5px 8px;">3.61</td></tr>
+      <tr><td style="padding:5px 8px;">Arameo / siríaco (Peshitta)</td><td style="padding:5px 8px;">17.5%</td><td style="padding:5px 8px;">3.52</td></tr>
+      <tr style="color:var(--faint);"><td style="padding:5px 8px;">…latín, sánscrito, finés, húngaro, hebreo, griego, ruso, italiano, alemán, indonesio (+15)</td><td style="padding:5px 8px;">16–35%</td><td style="padding:5px 8px;">2.8–3.6</td></tr>
+    </table></div>
+    <p style="font-size:14px;margin:12px 0 0;"><b>Ninguna cruza.</b> La semítica (árabe/arameo/hebreo) empata la carga de palabras-función, pero repite frases y tiene entropía normal, como todas. El veredicto no es por falta de buscar.</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="qn">Pregunta 5</div>
+  <h2>Entonces, ¿qué es exactamente?</h2>
+  <div class="finding">
+    <div class="lay sci"><div class="lab s"><span class="dot" style="background:var(--green)"></span>Científico</div>
+      <p class="mono">Se construye la <b>máquina mínima</b>: emitir palabras i.i.d. de un inventario fijo. Reproduce <b>todo</b> el perfil del Voynich — largo, variedad, repetición, y el residuo de entropía <b>h₂ = 2.26 exacto</b> (que ningún generador de partes libres lograba). Control: el español está <em>lejos</em> de su máquina equivalente (repetición 35% vs 11%); el Voynich está <em>pegado</em> a la suya (0.7% vs 0.1%).</p></div>
+    <div class="lay"><div class="lab c"><span class="dot" style="background:var(--indigo)"></span>En cristiano</div>
+      <p>Hicimos una máquina que solo saca palabras de una bolsa, una tras otra, sin reglas. Reproduce el Voynich <b>entero.</b> Con el español eso falla (le falta toda la gramática). Con el Voynich no falta nada — porque no hay gramática que reproducir.</p></div>
+    <div class="lay"><div class="lab v"><span class="dot" style="background:var(--rubric)"></span>Conclusión</div>
+      <p class="concl">El Voynich es <b>emisión de palabras de un inventario fijo, sin gramática.</b></p></div>
+  </div>
+
+  <h2 style="margin-top:48px;">La conclusión explícita</h2>
+  <div class="big-conc">
+    <div class="lab v" style="font-size:11px;letter-spacing:.14em;">Lo que se demuestra</div>
+    <p><b>El Voynich no es un texto que pueda traducirse.</b> No es prosa de ningún idioma — le falta la gramática y la repetición de frases que tiene todo lenguaje escrito. Es una máquina que emite palabras de un inventario fijo, sin reglas que las encadenen.</p>
+    <p style="color:var(--ink)">Eso deja exactamente <b>dos</b> lecturas posibles, y en la superficie son idénticas:</p>
+    <div class="fork">
+      <div class="fk"><b>A · Máquina sin mensaje.</b> Un aparato (rueda, rejilla, auto-copia) que genera pseudo-palabras. No hay nada que descifrar.</div>
+      <div class="fk"><b>B · Catálogo con sentido.</b> Una lista de entradas independientes (una por planta), sin sintaxis porque no es prosa. Habría significado, pero no oraciones.</div>
+    </div>
+    <p>Separar A de B exige ver si las palabras se conectan con algo <b>externo</b> (los dibujos, las etiquetas). Lo probamos tres veces: <b>nulo</b>. Sin esa llave externa —que demostramos ausente— el texto solo no puede decidir.</p>
+    <p><b>Qué NO es esto:</b> no es un descifrado, y no afirmamos haber leído una sola palabra. <b>Qué SÍ es:</b> la caracterización más precisa hecha hasta hoy de qué clase de objeto es el Voynich — y la prueba de por qué 600 años de intentos de "leerlo" fallaron: <b>no hay prosa que leer.</b></p>
+  </div>
+
+  <p class="foot">Todos los números provienen de medir la transliteración completa contra corpus reales (español, latín de Macer, árabe clásico del Corán e Ibn al-Baitar, sánscrito de Charaka, y una docena más vía UDHR) y contra generadores sintéticos. Los términos —σ, entropía condicional, TTR, n-gramas— son estándar en teoría de la información; aquí se traducen a la intuición, no se simplifican de más. Una guía aún más básica (solo "en cristiano") existe aparte.</p>
+</div>

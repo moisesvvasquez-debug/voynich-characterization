@@ -1,0 +1,90 @@
+<title>Kill the Dubs — un método de análisis honesto</title>
+<style>
+:root{
+  --bg:#f4f2ec; --card:#ffffff; --ink:#16130e; --soft:#4a463d; --faint:#8a857a;
+  --kill:#b02a1e; --live:#2c5a66; --line:rgba(22,19,14,.12); --strike:#a8a196;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e0d0b; --card:#1a1815; --ink:#ece8e0; --soft:#b0aa9d; --faint:#7c766a;
+  --kill:#e0604f; --live:#83b7c4; --line:rgba(236,232,224,.13); --strike:#5c564b;
+}}
+:root[data-theme="light"]{--bg:#f4f2ec;--card:#fff;--ink:#16130e;--soft:#4a463d;--faint:#8a857a;--kill:#b02a1e;--live:#2c5a66;--line:rgba(22,19,14,.12);--strike:#a8a196;}
+:root[data-theme="dark"]{--bg:#0e0d0b;--card:#1a1815;--ink:#ece8e0;--soft:#b0aa9d;--faint:#7c766a;--kill:#e0604f;--live:#83b7c4;--line:rgba(236,232,224,.13);--strike:#5c564b;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.6;}
+.wrap{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,60px);}
+.kick{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--kill);font-weight:700;}
+h1{font-family:ui-sans-serif,system-ui,"Segoe UI",Helvetica,sans-serif;font-size:clamp(44px,10vw,88px);font-weight:900;letter-spacing:-.03em;line-height:.92;margin:12px 0 6px;}
+h1 .k{color:var(--kill);}
+.principle{font-size:clamp(17px,2.6vw,22px);color:var(--soft);font-style:italic;max-width:34ch;margin:10px 0 0;line-height:1.3;text-wrap:balance;}
+.intro{margin:34px 0 8px;font-size:16px;max-width:60ch;}
+.intro b{color:var(--ink);}
+.dub-inline{color:var(--strike);text-decoration:line-through;text-decoration-color:var(--kill);text-decoration-thickness:2px;}
+h2{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:44px 0 16px;font-weight:700;border-bottom:1px solid var(--line);padding-bottom:8px;}
+.kill{display:flex;gap:18px;margin-bottom:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;}
+.knum{flex:0 0 auto;width:40px;height:40px;border-radius:9px;background:var(--kill);color:#fff;font-family:ui-sans-serif,system-ui,sans-serif;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.kbody{flex:1;}
+.kdub{font-size:17px;margin:0 0 6px;}
+.kdub .q{color:var(--strike);text-decoration:line-through;text-decoration-color:var(--kill);text-decoration-thickness:2.5px;font-style:italic;}
+.khow{font-size:15px;color:var(--soft);margin:0;}
+.khow b{color:var(--ink);}
+.fifth{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--live);border-radius:12px;padding:18px 22px;margin-top:6px;}
+.fifth .t{font-family:ui-sans-serif,system-ui,sans-serif;font-weight:800;color:var(--live);font-size:16px;margin-bottom:6px;}
+.fifth p{margin:0;font-size:15.5px;color:var(--soft);}
+.fifth b{color:var(--ink);}
+.payoff{text-align:center;font-family:ui-sans-serif,system-ui,sans-serif;font-weight:800;font-size:clamp(18px,2.8vw,24px);margin:40px 0;line-height:1.3;text-wrap:balance;}
+.payoff .live{color:var(--live);} .payoff .kill{color:var(--kill);}
+.case{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;}
+.case p{margin:0 0 10px;font-size:15px;}
+.case p:last-child{margin-bottom:0;}
+.case .h{font-family:ui-sans-serif,system-ui,sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:8px;}
+.case a{color:var(--live);}
+.foot{margin-top:36px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--faint);line-height:1.6;text-align:center;border-top:1px solid var(--line);padding-top:18px;}
+</style>
+
+<div class="wrap">
+  <div class="kick">KTD · método de análisis · señal antes que sentido</div>
+  <h1>Kill the <span class="k">Dubs</span> <span style="font-size:.34em;font-weight:700;color:var(--faint);letter-spacing:.04em;vertical-align:middle;">KTD</span></h1>
+  <p class="principle">Matá cada «probablemente» hasta que solo quede «probado» — o «honestamente, no sé».</p>
+
+  <p class="intro">Todo análisis está lleno de <b>dubs</b> — cosas <b>dudosas</b>, plausibles pero no probadas, que se disfrazan de hechos. El método es una <b>secuencia de ejecuciones</b>: en cada fase encontrás un dub y lo matás. Lo que sobrevive a las balas, lo afirmás. Lo demás — <span class="dub-inline">lo que suena bien pero no aguanta</span> — se declara, no se afirma.</p>
+
+  <h2>Los 4 dubs que matás</h2>
+
+  <div class="kill"><div class="knum">1</div><div class="kbody">
+    <p class="kdub"><span class="q">"Acá hay algo real."</span></p>
+    <p class="khow"><b>Contrastá contra el azar.</b> Antes de interpretar, probá contra un modelo nulo que hay señal. Si no supera al azar, no hay nada que leer — parás acá.</p>
+  </div></div>
+
+  <div class="kill"><div class="knum">2</div><div class="kbody">
+    <p class="kdub"><span class="q">"Mi hipótesis es correcta."</span></p>
+    <p class="khow"><b>Intentá romperla, no confirmarla.</b> Controles, permutaciones, size-matching, un segundo método. Buscá el confundido antes que el crítico. Solo sobrevive lo que aguanta el ataque.</p>
+  </div></div>
+
+  <div class="kill"><div class="knum">3</div><div class="kbody">
+    <p class="kdub"><span class="q">"Me acuerdo que esto es cierto."</span></p>
+    <p class="khow"><b>Verificá en la fuente, nunca por memoria.</b> Números contra el dato crudo, afirmaciones contra la fuente real. Y ubicá el trabajo previo: citá lo ajeno, reclamá solo lo tuyo.</p>
+  </div></div>
+
+  <div class="kill"><div class="knum">4</div><div class="kbody">
+    <p class="kdub"><span class="q">"Funcionó."</span></p>
+    <p class="khow"><b>Ventilá los nulos y tus errores.</b> Un resultado que esconde sus fracasos es un dub disfrazado. Mostrá lo que falló y lo que corregiste — en público.</p>
+  </div></div>
+
+  <div class="fifth">
+    <div class="t">🔪 El 5º golpe — el más difícil</div>
+    <p><b>Matá la tentación de afirmar de más.</b> Lo que no pudiste matar <em>ni</em> verificar no es un hallazgo: es el <b>límite honesto</b>. Declaralo. Y revisá que todo el documento concuerde consigo mismo — ninguna frase puede decir más de lo que probaste.</p>
+  </div>
+
+  <p class="payoff">Lo que sobrevive → <span class="live">lo afirmás.</span><br>Lo que no → <span class="kill">lo declarás.</span><br>Nunca al revés.</p>
+
+  <h2>El caso que lo demuestra</h2>
+  <div class="case">
+    <p class="h">El Manuscrito Voynich — el problema más propenso a delirio del mundo.</p>
+    <p>Aplicado al enigma sin descifrar más famoso — un imán de charlatanes — el método no lo "resolvió"; lo <b>caracterizó sin engañarse.</b> Matamos dubs propios en vivo: <span class="dub-inline">"43% son vocales"</span>, <span class="dub-inline">"inventa palabras como una máquina"</span>, <span class="dub-inline">"es una lengua semítica"</span> — todos ejecutados por los datos.</p>
+    <p>Sobrevivió lo justo: <b>carga información, es combinatorio, no es prosa, su tema por página se recupera al 71–82%.</b> Se declaró lo que no: <b>cero palabras decodificadas; el significado, indecidible desde el texto.</b> Eso — firme en lo firme, callado en lo incierto — es el producto.</p>
+    <p><a href="https://claude.ai/code/artifact/cd88d617-4eb9-4d5a-adbb-cccf5dfa353e">Cómo se hizo</a> · <a href="https://claude.ai/code/artifact/cafa5cad-d73d-4fd9-a86d-bffa4b3562e9">La autoauditoría</a> · <a href="https://claude.ai/code/artifact/943d66b2-17e3-4c7b-ba78-7c830945fc44">El paper</a></p>
+  </div>
+
+  <p class="foot">Kill the Dubs (KTD) · un método sustrato-independiente: sirve para un manuscrito, un balance, un modelo o una decisión. Lo que cambia es el problema; matar dubs, no.</p>
+</div>

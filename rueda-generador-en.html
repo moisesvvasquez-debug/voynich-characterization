@@ -1,0 +1,244 @@
+<title>The three-dial machine — Voynich word generator</title>
+<style>
+:root{
+  --bg:#ffffff; --panel:#f5f5f7; --ink:#1d1d1f; --soft:#6e6e73; --faint:#86868b;
+  --accent:#0071e3; --gold:#8a8a8e; --line:rgba(0,0,0,.11);
+  --ring:#6e6e73; --slab:#f5f5f7; --mark:#1d1d1f;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#161618; --panel:#1f1f22; --ink:#f5f5f7; --soft:#a1a1a6; --faint:#86868b;
+  --accent:#2997ff; --gold:#98989d; --line:rgba(255,255,255,.13);
+  --ring:#a1a1a6; --slab:#1f1f22; --mark:#f5f5f7;
+}}
+:root[data-theme="light"]{--bg:#fff;--panel:#f5f5f7;--ink:#1d1d1f;--soft:#6e6e73;--faint:#86868b;--accent:#0071e3;--gold:#8a8a8e;--line:rgba(0,0,0,.11);--ring:#6e6e73;--slab:#f5f5f7;--mark:#1d1d1f;}
+:root[data-theme="dark"]{--bg:#161618;--panel:#1f1f22;--ink:#f5f5f7;--soft:#a1a1a6;--faint:#86868b;--accent:#2997ff;--gold:#98989d;--line:rgba(255,255,255,.13);--ring:#a1a1a6;--slab:#1f1f22;--mark:#f5f5f7;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",system-ui,sans-serif;line-height:1.6;
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:840px;margin:0 auto;padding:clamp(22px,5vw,56px);}
+.kick{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.19em;
+  text-transform:uppercase;color:var(--accent);font-weight:700;}
+h1{font-size:clamp(30px,6vw,50px);font-weight:800;letter-spacing:-.02em;line-height:1.02;
+  margin:10px 0 8px;text-wrap:balance;}
+.lede{color:var(--soft);font-size:clamp(15px,2.3vw,18px);max-width:60ch;margin:0 0 6px;}
+.disc{font-size:13.5px;color:var(--faint);font-style:italic;max-width:64ch;margin:14px 0 0;
+  border-left:2px solid var(--line);padding-left:12px;}
+.stage{margin:34px 0 8px;display:flex;flex-direction:column;align-items:center;}
+svg.wheel{width:min(88vw,420px);height:auto;display:block;touch-action:none;}
+.wheel .rc{fill:none;stroke:var(--line);stroke-width:1;}
+.wheel .lbl{font-family:ui-monospace,Menlo,monospace;font-weight:700;fill:var(--ring);}
+.wheel .lbl.sel{fill:var(--accent);}
+.wheel .ringband{fill:var(--panel);opacity:.55;}
+.wheel .hub{fill:var(--panel);stroke:var(--gold);stroke-width:1.4;}
+.wheel .hubtx{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",system-ui,sans-serif;fill:var(--gold);font-weight:700;text-anchor:middle;}
+.pointer{fill:var(--accent);}
+.rgroup{transition:transform 1.15s cubic-bezier(.16,.9,.24,1);transform-origin:200px 200px;}
+.legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin:6px 0 0;
+  font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.08em;color:var(--faint);text-transform:uppercase;}
+.legend b{color:var(--ink);}
+.controls{display:flex;gap:12px;justify-content:center;align-items:center;margin:20px 0 8px;flex-wrap:wrap;}
+button.spin{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",system-ui,sans-serif;font-size:17px;font-weight:700;color:#fff;background:var(--accent);
+  border:none;border-radius:11px;padding:12px 26px;cursor:pointer;letter-spacing:.01em;
+  transition:transform .08s;}
+button.spin:active{transform:translateY(1px);}
+button.spin[disabled]{opacity:.5;cursor:default;}
+.auto{font-family:ui-monospace,monospace;font-size:12px;color:var(--soft);background:none;
+  border:1px solid var(--line);border-radius:9px;padding:9px 12px;cursor:pointer;}
+.out{margin:14px auto 0;max-width:560px;}
+.evaline{text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:15px;color:var(--soft);
+  letter-spacing:.02em;margin:0 0 10px;}
+.evaline .p{color:var(--accent);font-weight:700;} .evaline .c{color:var(--ink);font-weight:700;}
+.evaline .s{color:var(--gold);font-weight:700;}
+.slab{background:var(--slab);border-radius:14px;padding:26px 20px 22px;
+  display:flex;justify-content:center;align-items:center;min-height:120px;
+  border:1px solid var(--line);}
+.slab svg{max-width:100%;height:auto;}
+.slab path{fill:none;stroke:var(--mark);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+.slabcap{text-align:center;font-size:12px;color:var(--faint);font-style:italic;margin:8px 0 0;}
+.badge{display:flex;justify-content:center;gap:10px;align-items:center;margin:16px 0 0;font-size:14px;}
+.pill{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.06em;
+  padding:5px 11px;border-radius:20px;text-transform:uppercase;}
+.pill.yes{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);border:1px solid var(--accent);}
+.pill.no{background:transparent;color:var(--faint);border:1px solid var(--line);}
+.tally{text-align:center;font-family:ui-monospace,monospace;font-size:12.5px;color:var(--soft);margin:14px 0 0;}
+.tally b{color:var(--ink);}
+h2{font-size:12px;font-family:ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin:44px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px;font-weight:700;}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:10px;}
+.gcell{background:var(--slab);border-radius:10px;padding:10px 6px 6px;text-align:center;
+  border:1px solid var(--line);}
+.gcell svg path{fill:none;stroke:var(--mark);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+.gcell .gl{font-family:ui-monospace,monospace;font-size:11px;color:var(--faint);margin-top:4px;letter-spacing:.05em;}
+.note{font-size:14px;color:var(--soft);max-width:64ch;margin:16px 0 0;}
+.note b{color:var(--ink);}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+  font-family:ui-monospace,monospace;font-size:11.5px;color:var(--faint);line-height:1.7;}
+.foot a{color:var(--accent);}
+</style>
+
+<div class="wrap">
+  <div class="kick">Voynich Manuscript · the machine, not the message</div>
+  <h1>The three-dial machine</h1>
+  <p class="lede">Voynich words are built from three slots: a <b style="color:var(--accent)">prefix</b> (family), a <b>core</b> (item) and a <b style="color:var(--gold)">suffix</b> (grade). Spin the dials — loaded with the manuscript’s real frequencies — and the machine produces a word. Below, it is drawn with the glyph forms.</p>
+
+  <div class="stage">
+    <svg class="wheel" viewBox="0 0 400 400" id="wheel" aria-label="Rueda de tres anillos"></svg>
+    <div class="legend">
+      <span><b style="color:var(--accent)">◯ outer</b> prefix</span>
+      <span><b>◯ middle</b> core</span>
+      <span><b style="color:var(--gold)">◯ inner</b> suffix</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="spin" id="spin">Spin the dials</button>
+    <button class="auto" id="auto">Spin 100× ⟳</button>
+  </div>
+
+  <div class="out">
+    <p class="evaline" id="eva">— · — · —</p>
+    <div class="slab"><svg id="drawn" viewBox="0 0 300 60" aria-label="palabra dibujada"></svg></div>
+    <p class="slabcap">the same word, traced with the glyph forms</p>
+    <div class="badge" id="badge"></div>
+    <p class="tally" id="tally">Spins: <b>0</b> · landed on a genuinely attested word: <b>0</b></p>
+  </div>
+
+  <h2>The alphabet of forms (stylised EVA approximation)</h2>
+  <div class="gallery" id="gallery"></div>
+
+  <p class="note"><b>What it shows — and what it doesn’t.</b> That a few dials loaded with real frequencies often produce words that <em>do exist</em> in the manuscript (watch the counter) shows the text is a <b>combinatorial system of three coupled slots</b>, not a lexicon. What it does <b>not</b> show is what they mean: an empty generator and a meaningful catalogue produce the same forms. This is the <b>machine</b>, not the message.</p>
+
+  <div class="foot">
+    Hypothetical generator based on the prefix·core·suffix structure (81% of words). The dials use real frequencies from the Takahashi transliteration; the drawn forms are <b>stylised approximations</b> of the EVA glyphs, not facsimiles. Not a decipherment.<br>
+    Companion to the characterization paper · Carlos Moisés Vásquez
+  </div>
+</div>
+
+<script>
+// ---------- datos reales (Takahashi) ----------
+const DATA = {
+ prefix:[["ch",5136],["o",2914],["sh",2872],["d",2781],["qok",2703],["ot",2053],["ok",2051],["qot",980],["qo",885],["s",694],["yk",490],["yt",425]],
+ core:[["e",4340],["a",3086],["o",2395],["ai",2224],["ee",1292],["y",1142],["l",1113],["ch",1010],["r",699],["d",636],["k",525],["al",286]],
+ suffix:[["y",6076],["dy",3217],["in",2714],["l",2338],["r",2051],["edy",1859],["ol",1430],["aiin",1125],["or",1014],["ar",1009],["al",692],["eey",655]],
+ attested:new Set("daiin ol chedy aiin shedy chol ar or chey qokeey qokeedy dar shey qokedy qokaiin al dal chor dy okaiin qokal s shol okeey cheey cheol otedy qokar otaiin qol chdy sheey otar otal oteey qoky chy y okal chckhy sho okar okedy saiin dol sheol lchedy qokol oty qokey okeedy dair oteedy cheor shor qotedy shy cthy chody chcthy qoteedy air dam sar o dain dor qokain char qokchy kaiin cheo okeol cho qotchy raiin qotar okey cheedy cheky qotal qokchdy shckhy cthol l otey ykeey kar sol keedy odaiin sheor shody qokeol opchedy qotol sheo sheody olaiin chear checkhy otchy tol lkaiin chal sal kedy otor tar sor oly ykaiin keey qoteey shdy aiiin tedy cthey taiin lor cthor qodaiin chaiin otam lchey lkeey olkeey olkeedy oteol ody qokchedy ytaiin oteody lkeedy lol lshedy sheky okain kol chodaiin choky qokor ches sheckhy okeody chos dshedy okor okchy chees qopchedy shar oiin choty ckhy d ykar otchey cheos qokeody tchedy ckhey qokchey chedaiin chedar otchedy lkar cheal oraiin opchey olkaiin okchey shcthy chckhey olchedy ain os qotor checthy lkedy aly yteedy kchy qo dchy ytar pchedy otchdy qokeeey otchol she yteey kor oteos dchor chety dchedy okchedy she yty tor qotey okam aiir chedal olor olkedy qotchedy okeeey odar tchy daiir sair chl keody ykeedy kal ched qotchdy tchey ky qoaiin qokam cheeky daly olchey okair shaiin shear ycheey kchor ckhol kchey kchol okeor qor teey okchdy olky otair qoeedy qotchey sheal shecthy ytedy kchedy qokeor tal rar shodaiin oaiin dchol doiin dl om qockhy chdal chdar opchdy qockhey olkar lshey cthar keol tchor ykchy chockhy dchey qody qokchol oldy cthody ytal sheos dary ykedy shed okaly qokair olshedy okchor ytchy otain ychor ty chky ydaiin okeeol ory ary chdaiin ldy otaly cheeo lky chocthy yky otchor cham oar chkaiin daldy kchdy tchdy qopchdy okody qokeed teol qoeey okeeo lkchedy kair soiin ytor cphol chokchy ychey opchy chs cheeor olol ols sy okeo okees shal ycheo ykeody qokaly ror lchdy cphy pol yteody qotchol sheeol qokechy chkeey sh ctho rol ram qotchor chckhdy chokaiin key chkal teedy shee shedaiin orol okeeody opaiin lcheey do daiiin odal dcheey cheeody okchol choly tchol choy shocthy ycheol ctheey dshor shes keeol oteor tair aral qokeeody sheeky qoteody ykal shckhey pchor qoteol qodar ychol qoar qopchy ry choiin otody okeal chain dshey lr aldy".split(" "))
+};
+// ---------- glifos: paths estilizados (viewBox alto 48, baseline ~34) ----------
+const G = {
+ o:{w:22,d:"M11,16 C6,16 3,20 3,25 C3,30 6,34 11,34 C16,34 19,30 19,25 C19,20 16,16 11,16 Z"},
+ e:{w:17,d:"M15,18 C9,16 4,20 4,25 C4,31 9,34 15,32"},
+ c:{w:17,d:"M15,18 C9,16 4,20 4,25 C4,31 9,34 15,32"},
+ a:{w:21,d:"M14,17 C8,16 4,20 4,25 C4,31 8,34 14,33 M16,15 L16,34"},
+ i:{w:12,d:"M6,34 L11,18"},
+ n:{w:19,d:"M6,16 L6,30 C6,35 11,37 16,31"},
+ m:{w:26,d:"M6,16 L6,32 M6,24 C10,19 14,23 14,32 M14,24 C18,19 22,23 22,32 C22,35 25,36 26,33"},
+ l:{w:20,d:"M16,9 C8,8 4,15 8,20 C13,24 17,18 14,12 M13,20 C13,31 12,41 7,45"},
+ r:{w:18,d:"M6,34 L6,18 C6,15 12,14 16,19"},
+ d:{w:22,d:"M17,14 C10,12 4,17 4,23 C4,29 10,31 16,27 C19,25 19,20 16,18 M17,14 L17,34"},
+ y:{w:20,d:"M16,16 C9,14 4,19 6,23 C8,27 14,27 16,22 M16,19 C16,30 15,41 8,46 C5,48 3,46 4,42"},
+ s:{w:18,d:"M15,17 C9,15 5,18 8,21 C11,24 16,24 16,29 C16,34 9,35 5,31"},
+ q:{w:22,d:"M17,15 C10,13 4,18 5,23 C6,28 12,30 17,26 M17,15 L17,42"},
+ t:{w:27,d:"M11,34 L11,9 C11,3 20,3 22,9 C23,14 15,15 12,12"},
+ k:{w:27,d:"M13,34 L13,8 C13,3 4,3 2,9 C1,14 9,15 12,12"},
+ p:{w:29,d:"M7,34 L7,12 C7,4 22,4 22,12 L22,34 M7,17 C1,15 1,22 7,22"},
+ f:{w:31,d:"M7,34 L7,12 C7,4 22,4 22,12 L22,34 M7,17 C1,15 1,22 7,22 M22,17 C28,15 28,22 22,22"},
+ h:{w:18,d:"M6,34 C6,22 7,14 12,11 C16,9 18,14 16,19"}
+};
+function drawWord(str, targetW){
+  let x=2, parts=[], H=48;
+  for(const ch of str){ const g=G[ch]||G.o; parts.push([g,x]); x+=g.w+2; }
+  const total=x+2, scale=Math.min(1,(targetW-8)/total);
+  let inner="";
+  for(const [g,px] of parts){ inner+=`<path d="${g.d}" transform="translate(${px},0)"/>`; }
+  return {svg:`<g transform="translate(${(targetW-total*scale)/2},4) scale(${scale})">${inner}</g>`, h:H*scale+8};
+}
+// ---------- wheel ----------
+const NS="http://www.w3.org/2000/svg", CX=200, CY=200;
+const rings=[{key:"prefix",R:172,cls:"o"},{key:"core",R:128,cls:""},{key:"suffix",R:86,cls:"s"}];
+const wheel=document.getElementById("wheel");
+const state={};
+function buildWheel(){
+  let html="";
+  // bandas
+  html+=`<circle class="ringband" cx="${CX}" cy="${CY}" r="192"/>`;
+  rings.forEach(r=>{
+    const items=DATA[r.key];
+    let g=`<g class="rgroup" id="g_${r.key}">`;
+    g+=`<circle class="rc" cx="${CX}" cy="${CY}" r="${r.R}"/>`;
+    items.forEach((it,i)=>{
+      const a=i*360/items.length, rad=(a-90)*Math.PI/180;
+      const x=CX+r.R*Math.cos(rad), y=CY+r.R*Math.sin(rad);
+      const fs=r.key==="prefix"?13:(r.key==="core"?12.5:12);
+      g+=`<text class="lbl" id="t_${r.key}_${i}" x="${x}" y="${y}" font-size="${fs}" `
+       +`text-anchor="middle" dominant-baseline="central" transform="rotate(${a} ${x} ${y})">${it[0]}</text>`;
+    });
+    g+=`</g>`;
+    html+=g;
+  });
+  // hub
+  html+=`<circle class="hub" cx="${CX}" cy="${CY}" r="40"/>`;
+  html+=`<text class="hubtx" x="${CX}" y="${CY-4}" font-size="13">Ars</text>`;
+  html+=`<text class="hubtx" x="${CX}" y="${CY+12}" font-size="11" opacity=".8">combinandi</text>`;
+  // pointer (12 o'clock, pointing inward)
+  html+=`<path class="pointer" d="M200,6 l9,16 l-18,0 z"/>`;
+  wheel.innerHTML=html;
+}
+function weighted(items){
+  const tot=items.reduce((s,x)=>s+x[1],0); let r=state.rng()*tot;
+  for(let i=0;i<items.length;i++){ r-=items[i][1]; if(r<=0) return i; }
+  return items.length-1;
+}
+// PRNG determinista-ish sin Date/Math.random prohibidos? Math.random SÍ está permitido en artifact JS runtime del navegador.
+state.rng=Math.random;
+let spins={prefix:0,core:0,suffix:0}, tally={n:0,hit:0};
+function spinOnce(animate=true){
+  const sel={};
+  rings.forEach((r,ri)=>{
+    const items=DATA[r.key], idx=weighted(items);
+    sel[r.key]={idx,val:items[idx][0]};
+    const a=idx*360/items.length;
+    if(animate){ spins[r.key]+= (3+ri); }
+    const rot = spins[r.key]*360 - a;
+    const grp=document.getElementById("g_"+r.key);
+    grp.style.transition = animate? "" : "none";
+    grp.style.transform=`rotate(${rot}deg)`;
+    // marcar seleccionado
+    items.forEach((_,i)=>document.getElementById(`t_${r.key}_${i}`).classList.toggle("sel", i===idx));
+  });
+  const word=sel.prefix.val+sel.core.val+sel.suffix.val;
+  const evaEl=document.getElementById("eva");
+  evaEl.innerHTML=`<span class="p">${sel.prefix.val}</span> · <span class="c">${sel.core.val}</span> · <span class="s">${sel.suffix.val}</span>`;
+  const dv=document.getElementById("drawn");
+  const box=dv.clientWidth||300;
+  const d=drawWord(word, box);
+  dv.setAttribute("viewBox",`0 0 ${box} ${Math.max(60,d.h)}`);
+  dv.innerHTML=d.svg;
+  const att=DATA.attested.has(word);
+  document.getElementById("badge").innerHTML =
+    `<span class="mono" style="font-family:ui-monospace,monospace;font-weight:700">${word}</span>`+
+    (att?`<span class="pill yes">✓ attested in the manuscript</span>`
+        :`<span class="pill no">not attested as-is</span>`);
+  tally.n++; if(att) tally.hit++;
+  document.getElementById("tally").innerHTML=
+    `Spins: <b>${tally.n}</b> · landed on a genuinely attested word: <b>${tally.hit}</b> (<b>${Math.round(100*tally.hit/tally.n)}%</b>)`;
+}
+document.getElementById("spin").addEventListener("click",()=>spinOnce(true));
+document.getElementById("auto").addEventListener("click",()=>{
+  const btn=document.getElementById("spin"); btn.disabled=true;
+  let k=0; const iv=setInterval(()=>{ spinOnce(false); if(++k>=100){clearInterval(iv);btn.disabled=false;} },16);
+});
+// gallery
+function buildGallery(){
+  const order=["q","o","k","t","p","f","c","h","e","a","i","n","m","l","r","d","y","s"];
+  let html="";
+  order.forEach(ch=>{
+    const g=G[ch]; if(!g) return;
+    const w=g.w+8;
+    html+=`<div class="gcell"><svg viewBox="0 0 ${w} 52" width="42"><path d="${g.d}" transform="translate(4,2)"/></svg><div class="gl">${ch}</div></div>`;
+  });
+  document.getElementById("gallery").innerHTML=html;
+}
+buildWheel(); buildGallery();
+// primera palabra sin animar
+requestAnimationFrame(()=>spinOnce(false));
+</script>

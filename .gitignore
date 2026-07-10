@@ -1,0 +1,41 @@
+# --- secrets (never commit) ---
+.anthropic_key
+*.key
+.*_key
+.env
+.env.*
+
+# --- external corpora (not redistributed here) ---
+quijote_es.txt
+macer_latin.txt
+*_raw.txt
+*_raw.html
+udhr/
+
+# --- Beinecke scans & images (not redistributed) ---
+scans/
+*.jpg
+*.jpeg
+*.png
+
+# --- HTML with external deps / superseded drafts ---
+drift_viz.html
+auditoria.html
+como-trabajo.html
+
+# --- large derived data dumps ---
+*.jsonl
+ribbon.json
+strip_data.json
+thumbs_b64.json
+labels.json
+
+# --- backups, caches, os ---
+versions/
+__pycache__/
+*.pyc
+.DS_Store
+
+# logs & json data dumps
+*.log
+*.json
