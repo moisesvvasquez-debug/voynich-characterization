@@ -1,0 +1,21 @@
+{
+  "title": "Signal Before Sense: An Information-Theoretic Authenticity Assessment of the Voynich Manuscript",
+  "description": "An honest information-theoretic characterization of the Voynich Manuscript (Beinecke MS 408) that is explicitly NOT a decipherment. It answers two prior questions without reading the text: whether the manuscript carries information at all, and what kind of machine produced it. Several established results are reproduced independently with a single consistent pipeline; failed decipherment cribs are reported as first-class results. Includes the papers (English and Spanish), interactive generators, and the full analysis code. Produced with disclosed AI assistance as a computational tool.",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "access_right": "open",
+  "license": "cc-by-4.0",
+  "creators": [
+    { "name": "Vásquez, Carlos Moisés" }
+  ],
+  "keywords": [
+    "Voynich Manuscript",
+    "information theory",
+    "conditional entropy",
+    "quantitative philology",
+    "combinatorial morphology",
+    "cipher hypothesis",
+    "manuscript authenticity",
+    "null models"
+  ]
+}

@@ -39,3 +39,6 @@ __pycache__/
 # logs & json data dumps
 *.log
 *.json
+
+# keep Zenodo metadata despite *.json rule
+!.zenodo.json
