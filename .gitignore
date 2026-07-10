@@ -42,3 +42,6 @@ __pycache__/
 
 # keep Zenodo metadata despite *.json rule
 !.zenodo.json
+
+# keep the social preview image despite *.png rule
+!preview.png
