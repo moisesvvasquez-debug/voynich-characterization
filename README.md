@@ -1,5 +1,7 @@
 # Signal Before Sense — an information-theoretic characterization of the Voynich Manuscript
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21292582.svg)](https://doi.org/10.5281/zenodo.21292582)
+
 **Read / Leer:** [🇬🇧 English paper](paper.html) · [🇪🇸 Paper en español](paper_es.html) — PDFs: [EN](paper.pdf) · [ES](paper_es.pdf) · interactive: [EN](rueda-generador-en.html) / [ES](rueda-generador.html)
 *Caracterización honesta del Manuscrito Voynich por teoría de la información (no es un descifrado), disponible en inglés y español.*
 
@@ -58,6 +60,12 @@ See `kill-the-dubs.html`.
 External comparison corpora (Spanish, Latin, Arabic, Aramaic, Sanskrit, UDHR set) and the
 Beinecke page images are **not redistributed here**; scripts that use them expect them in the
 working directory.
+
+## Cite
+
+> Vásquez, C. M. (2026). *Signal Before Sense: An Information-Theoretic Authenticity Assessment of the Voynich Manuscript.* Zenodo. https://doi.org/10.5281/zenodo.21292582
+
+(Concept DOI — always resolves to the latest version.)
 
 ## License
 
