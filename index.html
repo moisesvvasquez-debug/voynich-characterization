@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal Before Sense — the Voynich Manuscript</title>
+<style>
+  :root{
+    --bg:#ffffff;--panel:#f5f5f7;--ink:#1d1d1f;--soft:#6e6e73;--faint:#86868b;
+    --accent:#0071e3;--rule:rgba(0,0,0,.11);--rule-soft:rgba(0,0,0,.06);--radius:14px;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#161618;--panel:#1f1f22;--ink:#f5f5f7;--soft:#a1a1a6;--faint:#86868b;
+    --accent:#2997ff;--rule:rgba(255,255,255,.13);--rule-soft:rgba(255,255,255,.07);
+  }}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:clamp(40px,9vw,90px) clamp(20px,5vw,32px) 70px;}
+  .kick{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--faint);font-weight:600;}
+  h1{font-size:clamp(30px,6vw,46px);font-weight:600;letter-spacing:-.022em;line-height:1.05;margin:12px 0 8px;text-wrap:balance;}
+  .tag{font-size:18px;color:var(--soft);margin:0 0 6px;max-width:56ch;letter-spacing:-.01em;}
+  .tag.es{font-size:15px;color:var(--faint);font-style:italic;}
+  .disc{font-size:14px;color:var(--faint);margin:20px 0 0;border-left:2px solid var(--rule);padding-left:12px;max-width:60ch;}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:38px 0 0;}
+  @media (max-width:560px){.cards{grid-template-columns:1fr;}}
+  .card{background:var(--panel);border:1px solid var(--rule-soft);border-radius:var(--radius);padding:22px 22px 18px;}
+  .card .flag{font-size:26px;line-height:1;}
+  .card h2{font-size:20px;font-weight:600;margin:10px 0 2px;letter-spacing:-.01em;}
+  .card .sub{font-size:13.5px;color:var(--soft);margin:0 0 16px;}
+  .card a.primary{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;
+    text-decoration:none;font-weight:600;font-size:15px;border-radius:999px;padding:9px 18px;margin-bottom:12px;}
+  .card a.primary:hover{opacity:.92;}
+  .card .row{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;}
+  .card .row a{color:var(--accent);text-decoration:none;}
+  .card .row a:hover{text-decoration:underline;}
+  .foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);
+    font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--faint);line-height:1.8;}
+  .foot a{color:var(--accent);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick">Voynich Manuscript · quantitative philology · working preprint</div>
+  <h1>Signal Before Sense</h1>
+  <p class="tag">An honest information-theoretic characterization of the Voynich Manuscript — first whether the text carries a message, then what machine produced it. <strong>Not a decipherment.</strong></p>
+  <p class="tag es">Una caracterización honesta del Manuscrito Voynich por teoría de la información — primero si el texto carga un mensaje, luego qué máquina lo produjo. <strong>No es un descifrado.</strong></p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="flag">🇬🇧</div>
+      <h2>English</h2>
+      <p class="sub">Read the paper, the PDF, or run the interactive generator.</p>
+      <a class="primary" href="paper.html">Read the paper →</a>
+      <div class="row">
+        <a href="paper.pdf">PDF</a>
+        <a href="rueda-generador-en.html">Interactive generator</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="flag">🇪🇸</div>
+      <h2>Español</h2>
+      <p class="sub">Leé el paper, el PDF, o probá el generador interactivo.</p>
+      <a class="primary" href="paper_es.html">Leer el paper →</a>
+      <div class="row">
+        <a href="paper_es.pdf">PDF</a>
+        <a href="rueda-generador.html">Generador interactivo</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="disc">The evidence shows the manuscript carries information and is a combinatorial system — but cannot decide whether that code has meaning or is a mechanical generator. That honest limit, and the failed cribs reported as first-class results, are the point.</p>
+
+  <div class="foot">
+    Carlos Moisés Vásquez · <a href="mailto:moises.vvasquez@gmail.com">moises.vvasquez@gmail.com</a><br>
+    Code MIT · text CC BY 4.0 · <a href="https://github.com/moisesvvasquez-debug/voynich-characterization">source on GitHub</a>
+  </div>
+</div>
+</body>
+</html>

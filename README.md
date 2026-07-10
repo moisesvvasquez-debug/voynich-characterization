@@ -1,5 +1,8 @@
 # Signal Before Sense — an information-theoretic characterization of the Voynich Manuscript
 
+**Read / Leer:** [🇬🇧 English paper](paper.html) · [🇪🇸 Paper en español](paper_es.html) — PDFs: [EN](paper.pdf) · [ES](paper_es.pdf) · interactive: [EN](rueda-generador-en.html) / [ES](rueda-generador.html)
+*Caracterización honesta del Manuscrito Voynich por teoría de la información (no es un descifrado), disponible en inglés y español.*
+
 **This is not a decipherment.** It is an honest attempt to answer two prior questions about
 the Voynich Manuscript (Beinecke MS 408) *without reading a single word*:
 
