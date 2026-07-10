@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Signal Before Sense: An Information-Theoretic Authenticity Assessment of the Voynich Manuscript"
+abstract: "An honest information-theoretic characterization of the Voynich Manuscript (not a decipherment): whether the text carries information, and what machine produced it. Established results reproduced independently; failed cribs reported as first-class results."
+authors:
+  - family-names: "Vásquez"
+    given-names: "Carlos Moisés"
+    email: "moises.vvasquez@gmail.com"
+url: "https://github.com/moisesvvasquez-debug/voynich-characterization"
+repository-code: "https://github.com/moisesvvasquez-debug/voynich-characterization"
+license: CC-BY-4.0
+date-released: "2026-07-10"
+keywords:
+  - Voynich Manuscript
+  - information theory
+  - conditional entropy
+  - quantitative philology
+  - cipher hypothesis
