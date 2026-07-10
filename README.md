@@ -56,6 +56,12 @@ External comparison corpora (Spanish, Latin, Arabic, Aramaic, Sanskrit, UDHR set
 Beinecke page images are **not redistributed here**; scripts that use them expect them in the
 working directory.
 
+## License
+
+- **Code** (`*.py`, interactive HTML generators) — **MIT** (`LICENSE`).
+- **Papers, text, figures** — **CC BY 4.0** (`LICENSE-TEXT.md`).
+- The Voynich EVA transliteration and external corpora keep their own terms (credited in the paper).
+
 ## Status & author
 
 Working preprint · not peer-reviewed. Author: **Carlos Moisés Vásquez** ·
