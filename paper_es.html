@@ -592,8 +592,200 @@ requestAnimationFrame(()=>spinOnce(false));
 </script>
 "></iframe></figure>
     <p class="tcap"><span class="fnum">El generador de tres diales — incrustado en vivo.</span> El generador corre aquí, dentro del paper; abajo está la copia independiente.</p>
+    <figure class="card" style="padding:0;overflow:hidden;"><iframe title="The wheel of f69r — embedded live" sandbox="allow-scripts" loading="lazy" style="width:100%;height:760px;border:0;display:block;background:var(--paper);" srcdoc="<title>Voynich Volvelle — f69r, an interactive reconstruction</title>
+<style>
+  :root{
+    --paper:#e9e7e0; --panel:#f2f0e9; --ink:#1c1e24; --soft:#55575e; --faint:#7b7c80;
+    --rubric:#a83526; --indigo:#2f5aa0; --gold:#9a7b2e; --rule:rgba(28,30,36,.16); --ring:#d8d3c4;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --paper:#14161c; --panel:#1a1d25; --ink:#dad8ce; --soft:#a1a19b; --faint:#75766f;
+    --rubric:#d16456; --indigo:#7ba0e0; --gold:#d0b25f; --rule:rgba(218,216,206,.17); --ring:#2b2f3a;
+  }}
+  :root[data-theme=&quot;light&quot;]{--paper:#e9e7e0;--panel:#f2f0e9;--ink:#1c1e24;--soft:#55575e;--faint:#7b7c80;--rubric:#a83526;--indigo:#2f5aa0;--gold:#9a7b2e;--rule:rgba(28,30,36,.16);--ring:#d8d3c4;}
+  :root[data-theme=&quot;dark&quot;]{--paper:#14161c;--panel:#1a1d25;--ink:#dad8ce;--soft:#a1a19b;--faint:#75766f;--rubric:#d16456;--indigo:#7ba0e0;--gold:#d0b25f;--rule:rgba(218,216,206,.17);--ring:#2b2f3a;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:&quot;Palatino Linotype&quot;,&quot;Book Antiqua&quot;,Palatino,Georgia,serif;line-height:1.5;}
+  .wrap{max-width:920px;margin:0 auto;padding:clamp(20px,4vw,44px);}
+  .eyebrow{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--rubric);font-weight:600;}
+  h1{font-size:clamp(22px,3.6vw,32px);margin:10px 0 6px;letter-spacing:-.01em;}
+  .sub{color:var(--soft);font-style:italic;margin:0 0 8px;}
+  .grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:start;}
+  @media(min-width:760px){.grid{grid-template-columns:1fr 300px;}}
+  .stage{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:10px;}
+  svg{width:100%;height:auto;display:block;touch-action:none;}
+  .mono{font-family:ui-monospace,Menlo,monospace;}
+  .panel{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px 18px;}
+  .panel h2{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 10px;}
+  .read{font-family:ui-monospace,Menlo,monospace;font-size:15px;line-height:1.9;}
+  .read .lvl{color:var(--faint);font-size:11px;}
+  .combo{font-size:22px;font-weight:700;letter-spacing:.02em;margin:6px 0;color:var(--ink);word-break:break-all;}
+  .verdict{font-family:ui-monospace,Menlo,monospace;font-size:13px;padding:6px 10px;border-radius:5px;display:inline-block;margin-top:4px;}
+  .ok{background:color-mix(in srgb,var(--indigo) 22%,transparent);color:var(--indigo);}
+  .no{background:color-mix(in srgb,var(--rubric) 16%,transparent);color:var(--rubric);}
+  .hint{font-size:13px;color:var(--soft);margin-top:14px;line-height:1.5;}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  button{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:transparent;color:var(--ink);
+    border:1px solid var(--rule);border-radius:5px;padding:7px 11px;cursor:pointer;}
+  button:hover{border-color:var(--rubric);color:var(--rubric);}
+  button:focus-visible{outline:2px solid var(--rubric);outline-offset:2px;}
+  .foot{font-size:12px;color:var(--faint);margin-top:20px;line-height:1.5;}
+  .tick{fill:var(--rubric);}
+  .wtext{font-family:ui-monospace,Menlo,monospace;fill:var(--ink);}
+  .rlabel{font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;fill:var(--faint);text-transform:uppercase;}
+</style>
+
+<div class=&quot;wrap&quot;>
+  <div class=&quot;eyebrow&quot;>Voynich MS · folio 69r · interactive reconstruction</div>
+  <h1>The wheel of f69r, made to turn</h1>
+  <p class=&quot;sub&quot;>Real transliterated text on each level. Drag a ring to rotate it; read what aligns under the index.</p>
+
+  <div class=&quot;grid&quot;>
+    <div class=&quot;stage&quot;>
+      <svg id=&quot;wheel&quot; viewBox=&quot;0 0 560 560&quot; aria-label=&quot;Rotatable Voynich volvelle&quot;></svg>
+      <div class=&quot;controls&quot;>
+        <button data-rot=&quot;outer:-1&quot;>◄ outer</button>
+        <button data-rot=&quot;outer:1&quot;>outer ►</button>
+        <button data-rot=&quot;inner:-1&quot;>◄ inner</button>
+        <button data-rot=&quot;inner:1&quot;>inner ►</button>
+        <button data-rot=&quot;hub:1&quot;>turn hub ►</button>
+        <button id=&quot;reset&quot;>reset</button>
+      </div>
+    </div>
+
+    <div class=&quot;panel&quot;>
+      <h2>Under the index ▲</h2>
+      <div class=&quot;read&quot;>
+        <div><span class=&quot;lvl&quot;>hub&amp;nbsp;&amp;nbsp;</span> <span id=&quot;rHub&quot; class=&quot;mono&quot;>—</span></div>
+        <div><span class=&quot;lvl&quot;>inner</span> <span id=&quot;rInner&quot; class=&quot;mono&quot;>—</span></div>
+        <div><span class=&quot;lvl&quot;>outer</span> <span id=&quot;rOuter&quot; class=&quot;mono&quot;>—</span></div>
+      </div>
+      <div style=&quot;margin-top:12px;&quot;>
+        <div class=&quot;lvl mono&quot; style=&quot;color:var(--faint);font-size:11px;&quot;>reading inward→outward</div>
+        <div id=&quot;combo&quot; class=&quot;combo&quot;>—</div>
+        <div id=&quot;verdict&quot; class=&quot;verdict no&quot;>—</div>
+      </div>
+      <p class=&quot;hint&quot;>The combinatorial model (§4.13) says a word = <b>prefix + core + suffix</b> drawn from small inventories. Rotate the rings: when the aligned pieces form a string that decomposes cleanly — or matches a word attested elsewhere in the manuscript — it lights up. This is an instrument for exploring the wheel hypothesis, <em>not</em> a claimed decipherment.</p>
+    </div>
+  </div>
+
+  <p class=&quot;foot&quot;>Text: Takahashi transliteration of f69r (hub glyphs · inner labels · 22 radial spokes · outer ring). The alignment &quot;meaning&quot; is unknown; the tool tests only whether rotations produce combinatorially well-formed or attested forms. Built as a research instrument.</p>
+</div>
+
+<script>
+// ---- real f69r data (leading tokens per locus) ----
+const HUB   = [&quot;y&quot;,&quot;d&quot;,&quot;o&quot;,&quot;l&quot;,&quot;s&quot;,&quot;em&quot;];
+const INNER = [&quot;oteos&quot;,&quot;ar&quot;,&quot;oto&quot;,&quot;okeeo&quot;,&quot;dchochar&quot;,&quot;ytal&quot;,&quot;shy&quot;,&quot;ytoetear&quot;,&quot;ytey&quot;,&quot;dair&quot;,&quot;okair&quot;,&quot;chy&quot;,&quot;chetar&quot;,&quot;dalr&quot;,&quot;dal&quot;,&quot;ytcheodytor&quot;];
+const OUTER = [&quot;chodchy&quot;,&quot;okeo&quot;,&quot;okeodar&quot;,&quot;ykeeos&quot;,&quot;ykeey&quot;,&quot;doly&quot;,&quot;okchol&quot;,&quot;ykechody&quot;,&quot;dary&quot;,&quot;okchocthy&quot;,&quot;cheg&quot;,&quot;sair&quot;,&quot;okcho&quot;,&quot;sol&quot;,&quot;okeos&quot;,&quot;docheeo&quot;,&quot;dchokey&quot;,&quot;chor&quot;,&quot;soir&quot;,&quot;okody&quot;,&quot;chokeod&quot;,&quot;dkochy&quot;];
+// a compact set of attested f69r words (for the &quot;attested&quot; check)
+const ATTESTED = new Set([...HUB,...INNER,...OUTER,
+  &quot;okoeese&quot;,&quot;dainkey&quot;,&quot;ochs&quot;,&quot;cheor&quot;,&quot;yteey&quot;,&quot;okcheo&quot;,&quot;dar&quot;,&quot;cho&quot;,&quot;okchos&quot;,&quot;al&quot;,&quot;aiin&quot;,
+  &quot;chotal&quot;,&quot;sho&quot;,&quot;qotam&quot;,&quot;oteody&quot;,&quot;dal&quot;,&quot;oky&quot;,&quot;chyky&quot;,&quot;qokol&quot;,&quot;dalo&quot;,&quot;otar&quot;,&quot;aloly&quot;,&quot;okar&quot;,&quot;ar&quot;,&quot;ithor&quot;,&quot;ary&quot;,&quot;chekey&quot;,&quot;dairam&quot;,&quot;okeytam&quot;,&quot;alg&quot;,&quot;kody&quot;,&quot;sar&quot;,&quot;shkchody&quot;,&quot;ylcho&quot;,&quot;ral&quot;,&quot;okody&quot;,&quot;otedy&quot;,&quot;cheody&quot;,&quot;okeea&quot;,&quot;cthody&quot;,&quot;dy&quot;]);
+const PRE=[&quot;qok&quot;,&quot;qot&quot;,&quot;qol&quot;,&quot;qo&quot;,&quot;ok&quot;,&quot;ot&quot;,&quot;op&quot;,&quot;o&quot;,&quot;cth&quot;,&quot;ckh&quot;,&quot;ch&quot;,&quot;sh&quot;,&quot;d&quot;,&quot;s&quot;,&quot;y&quot;,&quot;l&quot;,&quot;r&quot;,&quot;k&quot;,&quot;t&quot;,&quot;p&quot;,&quot;f&quot;,&quot;a&quot;];
+const SUF=[&quot;aiin&quot;,&quot;aiiin&quot;,&quot;ain&quot;,&quot;iin&quot;,&quot;eedy&quot;,&quot;eeey&quot;,&quot;eey&quot;,&quot;eody&quot;,&quot;edy&quot;,&quot;ody&quot;,&quot;ey&quot;,&quot;dy&quot;,&quot;ol&quot;,&quot;or&quot;,&quot;al&quot;,&quot;ar&quot;,&quot;am&quot;,&quot;in&quot;,&quot;y&quot;,&quot;s&quot;,&quot;o&quot;,&quot;d&quot;,&quot;l&quot;,&quot;r&quot;,&quot;n&quot;];
+function decomposes(w){
+  let core=w,pre=&quot;&quot;,suf=&quot;&quot;;
+  for(const p of PRE){ if(core.startsWith(p)&amp;&amp;core.length>p.length){pre=p;core=core.slice(p.length);break;} }
+  for(const s of SUF){ if(core.endsWith(s)&amp;&amp;core.length>s.length){suf=s;core=core.slice(0,-s.length);break;} }
+  return (pre&amp;&amp;suf)?{pre,core,suf}:null;
+}
+
+const NS=&quot;http://www.w3.org/2000/svg&quot;;
+const svg=document.getElementById(&quot;wheel&quot;);
+const CX=280,CY=280;
+const rings={
+  outer:{r:238, words:OUTER, rot:0, g:null},
+  inner:{r:150, words:INNER, rot:0, g:null},
+  hub:{r:70, words:HUB, rot:0, g:null},
+};
+function el(n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;}
+
+// static decoration: ring circles + index
+[248,160,80,30].forEach(r=>svg.appendChild(el(&quot;circle&quot;,{cx:CX,cy:CY,r,fill:&quot;none&quot;,stroke:&quot;var(--ring)&quot;,&quot;stroke-width&quot;:1})));
+svg.appendChild(el(&quot;circle&quot;,{cx:CX,cy:CY,r:5,fill:&quot;var(--rubric)&quot;}));
+// index marker at top (12 o'clock)
+svg.appendChild(el(&quot;path&quot;,{d:`M${CX-11},26 L${CX+11},26 L${CX},46 Z`,class:&quot;tick&quot;}));
+[[&quot;outer&quot;,258],[&quot;inner&quot;,172],[&quot;hub&quot;,92]].forEach(([n,rr])=>{
+  const t=el(&quot;text&quot;,{x:CX,y:CY-rr+3,&quot;text-anchor&quot;:&quot;middle&quot;,class:&quot;rlabel&quot;});t.textContent=n;svg.appendChild(t);
+});
+
+function buildRing(name){
+  const R=rings[name];
+  const g=el(&quot;g&quot;,{}); R.g=g; svg.appendChild(g);
+  const n=R.words.length;
+  R.words.forEach((w,i)=>{
+    const ang=(i/n)*360;
+    const rad=(ang-90)*Math.PI/180;
+    const x=CX+R.r*Math.cos(rad), y=CY+R.r*Math.sin(rad);
+    const t=el(&quot;text&quot;,{x,y,&quot;text-anchor&quot;:&quot;middle&quot;,&quot;dominant-baseline&quot;:&quot;middle&quot;,
+      class:&quot;wtext&quot;,&quot;font-size&quot;:name===&quot;hub&quot;?18:(name===&quot;outer&quot;?12:12),
+      transform:`rotate(${ang} ${x} ${y})`});
+    t.textContent=w; g.appendChild(t);
+  });
+}
+[&quot;outer&quot;,&quot;inner&quot;,&quot;hub&quot;].forEach(buildRing);
+
+function apply(name){ const R=rings[name]; R.g.setAttribute(&quot;transform&quot;,`rotate(${R.rot} ${CX} ${CY})`); }
+function indexOf(name){
+  const R=rings[name],n=R.words.length;
+  // which word sits nearest the top index given rotation
+  let idx=Math.round((-R.rot/360)*n)%n; if(idx<0)idx+=n;
+  return R.words[idx];
+}
+function readout(){
+  const h=indexOf(&quot;hub&quot;),i=indexOf(&quot;inner&quot;),o=indexOf(&quot;outer&quot;);
+  document.getElementById(&quot;rHub&quot;).textContent=h;
+  document.getElementById(&quot;rInner&quot;).textContent=i;
+  document.getElementById(&quot;rOuter&quot;).textContent=o;
+  // candidate combination: inner ⊕ outer (the two lexical rings), hub as the &quot;dial&quot; atom
+  const combo=i+o;
+  document.getElementById(&quot;combo&quot;).textContent=combo;
+  const v=document.getElementById(&quot;verdict&quot;);
+  const dec=decomposes(combo), att=ATTESTED.has(combo)||ATTESTED.has(i+o)||ATTESTED.has(h+i);
+  if(att){v.className=&quot;verdict ok&quot;;v.textContent=&quot;✓ attested form in f69r&quot;;}
+  else if(dec){v.className=&quot;verdict ok&quot;;v.textContent=`✓ well-formed: ${dec.pre}·${dec.core}·${dec.suf}`;}
+  else{v.className=&quot;verdict no&quot;;v.textContent=&quot;✕ not a licensed combination&quot;;}
+}
+[&quot;outer&quot;,&quot;inner&quot;,&quot;hub&quot;].forEach(n=>{apply(n);}); readout();
+
+// drag to rotate whichever ring you grab (nearest by radius)
+let drag=null;
+function ptAng(ev){
+  const rect=svg.getBoundingClientRect();
+  const sx=(ev.clientX-rect.left)/rect.width*560, sy=(ev.clientY-rect.top)/rect.height*560;
+  return {ang:Math.atan2(sy-CY,sx-CX)*180/Math.PI, rr:Math.hypot(sx-CX,sy-CY)};
+}
+svg.addEventListener(&quot;pointerdown&quot;,ev=>{
+  const {ang,rr}=ptAng(ev);
+  let name = rr>205?&quot;outer&quot;: rr>120?&quot;inner&quot;:&quot;hub&quot;;
+  drag={name,startAng:ang,startRot:rings[name].rot};
+  svg.setPointerCapture(ev.pointerId);
+});
+svg.addEventListener(&quot;pointermove&quot;,ev=>{
+  if(!drag)return;
+  const {ang}=ptAng(ev);
+  rings[drag.name].rot=drag.startRot+(ang-drag.startAng);
+  apply(drag.name); readout();
+});
+svg.addEventListener(&quot;pointerup&quot;,()=>{drag=null;});
+svg.addEventListener(&quot;pointercancel&quot;,()=>{drag=null;});
+
+// buttons: step a ring by one slot
+document.querySelectorAll(&quot;[data-rot]&quot;).forEach(b=>{
+  b.addEventListener(&quot;click&quot;,()=>{
+    const [name,dir]=b.dataset.rot.split(&quot;:&quot;);
+    const n=rings[name].words.length;
+    rings[name].rot += (parseInt(dir))*(360/n);
+    apply(name); readout();
+  });
+});
+document.getElementById(&quot;reset&quot;).addEventListener(&quot;click&quot;,()=>{
+  [&quot;outer&quot;,&quot;inner&quot;,&quot;hub&quot;].forEach(n=>{rings[n].rot=0;apply(n);}); readout();
+});
+</script>
+"></iframe><figcaption class="cap" style="padding:10px 14px;">La rueda de f69r — una reconstrucci&oacute;n rotatoria de la volvelle del propio manuscrito (&sect;4.13). Gir&aacute; los anillos; verde = forma prefijo&middot;n&uacute;cleo&middot;sufijo l&iacute;cita, rojo = combinaci&oacute;n ilegal.</figcaption></figure>
     <ul>
-      <li><a href="https://claude.ai/code/artifact/6a4b5e06-3623-40ce-8309-10bc907ddce0">La rueda de f69r</a> — reconstrucción girable de la propia volvelle del manuscrito (§4.13).</li>
       <li><a href="https://claude.ai/code/artifact/5bbd2b47-eff3-4a61-b542-44a2f427c9cf">La máquina de tres diales</a> — un generador que gira los diales prefijo·núcleo·sufijo con las frecuencias reales del manuscrito y dibuja cada resultado como formas de glifos; un contador muestra con qué frecuencia cae en una palabra realmente atestiguada (§4.13).</li>
       <li><a href="https://claude.ai/code/artifact/a99d90db-b347-49df-abd9-bda41bac2667">El ajuste que se desliza</a> — la deriva del sufijo y el desacople texto–imagen, visualizados.</li>
       <li><a href="https://claude.ai/code/artifact/88df4b03-3943-45c4-8f77-2ecae5266e6e">Los hallazgos en tres capas</a> — cada resultado como afirmación rigurosa + explicación en cristiano + conclusión explícita, con la comparación de 25 idiomas.</li>
