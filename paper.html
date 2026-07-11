@@ -601,7 +601,39 @@ requestAnimationFrame(()=>spinOnce(false));
       <li><a href="https://claude.ai/code/artifact/481c9934-8de9-4076-b4a9-ea12335612d9">The three-layer map</a> — carries information · a combinatorial machine · the open question.</li>
       <li><a href="https://claude.ai/code/artifact/cafa5cad-d73d-4fd9-a86d-bffa4b3562e9">Honest self-audit</a> — our contributions vs. prior work, with an action plan for each objection.</li>
     </ul>
-    <h2 class="sec">Acknowledgments</h2>
+  <section>
+    <h2 class="sec">Glossary</h2>
+    <p style="color:var(--soft,#666);font-size:14px;margin:-4px 0 14px;">Plain-language definitions of the technical terms and figures used above.</p>
+    <dl style="font-size:14.5px;line-height:1.5;margin:0;">
+      <dt style="font-weight:600;margin-top:13px;">&sigma; (sigma) — e.g. 165&sigma;</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">Standard deviations above chance. 165&sigma; means the pattern is astronomically unlikely to be a fluke.</dd>
+      <dt style="font-weight:600;margin-top:13px;">conditional entropy (h&#8322;)</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">How unpredictable the next glyph is once you know the current one. The Voynich&rsquo;s is unusually low — the script is more rigid than any natural language.</dd>
+      <dt style="font-weight:600;margin-top:13px;">glyph</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">One written character of the Voynich script; its sound is unknown.</dd>
+      <dt style="font-weight:600;margin-top:13px;">EVA / transliteration</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">Rewriting the glyphs as familiar Latin letters, without claiming to know their sounds.</dd>
+      <dt style="font-weight:600;margin-top:13px;">prefix · core · suffix</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">The three parts a Voynich word breaks into: a small set of beginnings, a middle value, and a small set of endings.</dd>
+      <dt style="font-weight:600;margin-top:13px;">combinatorial (slot / dial)</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">Words built by combining pieces from small fixed sets — like spinning dials — rather than drawn from a dictionary.</dd>
+      <dt style="font-weight:600;margin-top:13px;">cardinality</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">How many distinct values a slot can take (e.g. ~13 prefixes, ~147 cores).</dd>
+      <dt style="font-weight:600;margin-top:13px;">graded vs categorical</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A graded slot is a scale (cold→warm→hot); a categorical one is unordered labels (apple, pear, plum).</dd>
+      <dt style="font-weight:600;margin-top:13px;">bigram / trigram</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A pair / a triple of consecutive symbols. Which pairs and triples never occur reveals the grammar&rsquo;s rules.</dd>
+      <dt style="font-weight:600;margin-top:13px;">codebook</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">The table that says what each symbol or slot means — the &ldquo;key&rdquo;. For the Voynich it is lost or was never fixed.</dd>
+      <dt style="font-weight:600;margin-top:13px;">underdetermined / undecidable (from the text)</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">Many different codebooks produce the exact same text, so nothing measurable picks the true one; the meaning cannot be settled from the text alone.</dd>
+      <dt style="font-weight:600;margin-top:13px;">10²⁶</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A 1 followed by 26 zeros — roughly the number of codebooks consistent with the text. Far more than could ever be checked.</dd>
+      <dt style="font-weight:600;margin-top:13px;">crib / anchor</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A single known example (a symbol paired with its real meaning) that unlocks the rest of a cipher. The Voynich has none.</dd>
+      <dt style="font-weight:600;margin-top:13px;">the 97% trap</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">Because the text is built from a few recurring parts, freely recombining them &ldquo;finds&rdquo; real words in almost anything — 97% of the time by cherry-picking. Isolated matches are never evidence.</dd>
+      <dt style="font-weight:600;margin-top:13px;">permutation null</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">Shuffling the data to see what &ldquo;no real pattern&rdquo; looks like, so a result only counts if it beats the shuffle.</dd>
+      <dt style="font-weight:600;margin-top:13px;">statistical power</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A test&rsquo;s ability to detect an effect if one exists. A null result only means something if the test had the power to have found the effect.</dd>
+      <dt style="font-weight:600;margin-top:13px;">substrate-independent</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A message leaves the same statistical traces whatever the language or code — so you can detect a message without reading it.</dd>
+      <dt style="font-weight:600;margin-top:13px;">verbose cipher</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A code where one underlying unit is written with several symbols, which lowers the apparent entropy.</dd>
+      <dt style="font-weight:600;margin-top:13px;">a priori language</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A constructed language whose words are built from categories by rule (category·subcategory·value), not borrowed from any existing tongue.</dd>
+      <dt style="font-weight:600;margin-top:13px;">materia medica</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A reference work of medicinal substances — for each plant, its properties, preparation and uses.</dd>
+      <dt style="font-weight:600;margin-top:13px;">alchemical herbal</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A 15th-century, mostly northern-Italian genre of herbals with fantastical composite plants (roots as animals, leaves with eyes), copied from a lost archetype rather than drawn from life.</dd>
+      <dt style="font-weight:600;margin-top:13px;">humoral quality / degree</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">Medieval medicine classified each plant as hot, cold, dry or moist, each in one of four degrees of intensity.</dd>
+      <dt style="font-weight:600;margin-top:13px;">hapax</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">A word that occurs only once in the whole text, so a proposed meaning for it cannot be cross-checked.</dd>
+      <dt style="font-weight:600;margin-top:13px;">Currier A / B</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">The two distinct statistical systems (&ldquo;scribal languages&rdquo;) found in the manuscript — perhaps two scribes or dialects.</dd>
+      <dt style="font-weight:600;margin-top:13px;">synthesis / convergent replication</dt><dd style="margin:2px 0 0;color:var(--soft,#5a5a5a);">Assembling many separate prior findings into one self-consistent picture, and independently re-deriving them as a cross-check.</dd>
+    </dl>
+  </section>
+
+      <h2 class="sec">Acknowledgments</h2>
     <p>The analyses in this paper — the design and coding of each statistical test, the discipline of holding every result against a control, and the historical synthesis that frames them — were carried out in a single working session in close collaboration with an AI research assistant (Anthropic's Claude). Candidly, the study would not have been possible, at this breadth or this speed, without it: the tool acted less as an aid than as a force-multiplier on human hypothesis-generation — the difference between a question one could only pose and one that could actually be answered. The direction of inquiry, the interpretations, and responsibility for any errors remain the author's.</p>
   </section>
 
